@@ -2,6 +2,19 @@
 
 This repo hosts samples for working with the OpenTelemetry Operator on GCP.
 
+* [Running the Operator](#running-the-operator)
+   * [Prerequisites](#prerequisites)
+   * [Installing the OpenTelemetry Operator](#installing-the-opentelemetry-operator)
+   * [Starting the Collector](#starting-the-collector)
+   * [Auto-instrumenting Applications](#auto-instrumenting-applications)
+* [Sample Applications](#sample-applications)
+   * [NodeJS](#nodejs)
+   * [Java](#java)
+   * [Python](#python)
+   * [Go](#go)
+* [Contributing](#contributing)
+* [License](#license)
+
 ## Running the Operator
 
 ### Prerequisites
