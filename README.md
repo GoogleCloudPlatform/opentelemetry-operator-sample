@@ -8,10 +8,7 @@ This repo hosts samples for working with the OpenTelemetry Operator on GCP.
    * [Starting the Collector](#starting-the-collector)
    * [Auto-instrumenting Applications](#auto-instrumenting-applications)
 * [Sample Applications](#sample-applications)
-   * [NodeJS](#nodejs)
-   * [Java](#java)
-   * [Python](#python)
-   * [Go](#go)
+* [Recipes](#recipes)
 * [Contributing](#contributing)
 * [License](#license)
 
@@ -98,6 +95,15 @@ Then run one of the language-based sample apps below:
 * Python (coming soon)
 * DotNET (coming soon)
 * Go (coming soon)
+
+## Recipes
+
+The [`recipes`](recipes/) directory holds different sample use cases for working with the
+operator and auto-instrumentation along with setup guides for each recipe. Currently there are:
+
+* [Trace sampling configuration](recipes/trace-sampling)
+* Trace filtering (coming soon)
+* Trace enhancements (coming soon)
 
 ## Contributing
 
