@@ -91,45 +91,13 @@ Make sure to set the `GCLOUD_PROJECT` environment variable before running these:
 export GCLOUD_PROJECT=my-gke-project
 ```
 
-### NodeJS
+Then run one of the language-based sample apps below:
 
-1. Build the sample app:
-   ```
-   make sample-nodejs-build
-   ```
-   This command will also update the local [manifests](sample-apps/nodejs/k8s)
-   to refer to your image location.
-
-2. Push the local image to the Artifact Registry you created
-   in the setup steps (if you did not create one, or are using an already created registry,
-   make sure to set the `REGISTRY_LOCATION` and `CONTAINER_REGISTRY` variables):
-   ```
-   make sample-nodejs-push
-   ```
-
-3. Deploy the app in your cluster:
-   ```
-   kubectl apply -f sample-apps/nodejs/k8s/.
-   ```
-   If you want to run the sample app in a specific namespace, pass `-n <your-namespace>`.
-
-4. Run the following commands to patch the `app` and `server` deployments for auto-instrumentation:
-   ```
-   kubectl patch deployment.apps/nodeshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
-   kubectl patch deployment.apps/nodeshowcase-service -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
-   ```
-
-### Java
-
-Coming soon
-
-### Python
-
-Coming soon
-
-### Go
-
-Coming soon
+* [NodeJS](sample-apps/nodejs)
+* Java (coming soon)
+* Python (coming soon)
+* DotNET (coming soon)
+* Go (coming soon)
 
 ## Contributing
 

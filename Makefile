@@ -21,17 +21,9 @@ setup:
 
 .PHONY: sample-replace
 sample-replace:
-	sed -i "s/%GCLOUD_PROJECT%/${GCLOUD_PROJECT}/g" sample-apps/nodejs/k8s/app.yaml
-	sed -i "s/%CONTAINER_REGISTRY%/${CONTAINER_REGISTRY}/g" sample-apps/nodejs/k8s/app.yaml
-	sed -i "s/%REGISTRY_LOCATION%/${REGISTRY_LOCATION}/g" sample-apps/nodejs/k8s/app.yaml
-	sed -i "s/%GCLOUD_PROJECT%/${GCLOUD_PROJECT}/g" sample-apps/nodejs/k8s/service.yaml
-	sed -i "s/%CONTAINER_REGISTRY%/${CONTAINER_REGISTRY}/g" sample-apps/nodejs/k8s/service.yaml
-	sed -i "s/%REGISTRY_LOCATION%/${REGISTRY_LOCATION}/g" sample-apps/nodejs/k8s/service.yaml
-
-.PHONY: sample-nodejs-build
-sample-nodejs-build: sample-replace
-	docker build -t ${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/nodejs-sample -f ./sample-apps/nodejs/Dockerfile ./sample-apps/nodejs/.
-
-.PHONY: sample-nodejs-push
-sample-nodejs-push:
-	docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/nodejs-sample:latest
+	sed -i "s/%GCLOUD_PROJECT%/${GCLOUD_PROJECT}/g" k8s/app.yaml
+	sed -i "s/%CONTAINER_REGISTRY%/${CONTAINER_REGISTRY}/g" k8s/app.yaml
+	sed -i "s/%REGISTRY_LOCATION%/${REGISTRY_LOCATION}/g" k8s/app.yaml
+	sed -i "s/%GCLOUD_PROJECT%/${GCLOUD_PROJECT}/g" k8s/service.yaml
+	sed -i "s/%CONTAINER_REGISTRY%/${CONTAINER_REGISTRY}/g" k8s/service.yaml
+	sed -i "s/%REGISTRY_LOCATION%/${REGISTRY_LOCATION}/g" k8s/service.yaml
