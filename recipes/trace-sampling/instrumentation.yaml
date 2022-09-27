@@ -15,7 +15,7 @@
 apiVersion: opentelemetry.io/v1alpha1
 kind: Instrumentation
 metadata:
-  name: my-instrumentation
+  name: trace-sampling
 spec:
   exporter:
     endpoint: http://otel-collector:4317
@@ -24,6 +24,5 @@ spec:
     - baggage
     - b3
   sampler:
-    #type: parentbased_traceidratio
-    #argument: "0.25"
-    type: "always_off"
+    type: parentbased_traceidratio
+    argument: "0.25"
