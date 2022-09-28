@@ -14,6 +14,7 @@
 
 CONTAINER_REGISTRY=otel-operator
 REGISTRY_LOCATION=us-central1
+GCLOUD_PROJECT ?= $(shell gcloud config get project)
 
 .PHONY: setup
 setup:
