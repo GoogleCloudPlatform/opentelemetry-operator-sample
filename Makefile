@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CONTAINER_REGISTRY=otel-operator
-REGISTRY_LOCATION=us-central1
+CONTAINER_REGISTRY ?= otel-operator
+REGISTRY_LOCATION ?= us-central1
 GCLOUD_PROJECT ?= $(shell gcloud config get project)
 
 .PHONY: setup
