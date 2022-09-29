@@ -109,6 +109,7 @@ operator and auto-instrumentation along with setup guides for each recipe. Curre
 * [Trace sampling configuration](recipes/trace-sampling)
 * Trace filtering (coming soon)
 * Trace enhancements (coming soon)
+* [Cloud Trace integration](recipes/cloud-trace)
 
 ## Contributing
 

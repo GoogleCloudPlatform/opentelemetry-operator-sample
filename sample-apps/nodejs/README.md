@@ -8,6 +8,9 @@ server listens for requests which the client makes on a timed loop.
 * OpenTelemetry Operator installed in your cluster
 * Artifact Registry set up in your GCP project (see the 
 [main README.md](../../README.md#sample-applications))
+* An `Instrumentation` object already created in the current namespace
+  (such as [the sample `instrumentation.yaml`](#auto-instrumenting-applications)
+  from the main [README](../../README.md))
 
 ## Running
 
@@ -36,3 +39,4 @@ server listens for requests which the client makes on a timed loop.
    kubectl patch deployment.apps/nodeshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
    kubectl patch deployment.apps/nodeshowcase-service -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
    ```
+   These commands will use the `Instrumentation` created as part of the Prerequisites.
