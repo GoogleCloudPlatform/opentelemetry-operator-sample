@@ -64,6 +64,9 @@ in [`instrumentation.yaml`](instrumentation.yaml):
 kubectl apply -f instrumentation.yaml
 ```
 
+With a Collector and auto-instrumentation set up, you can experiment with it using one of the [sample applications](sample-apps),
+or skip right to the [recipes](recipes) if you already have an application running.
+
 ## Sample Applications
 
 The [`sample-apps/`](sample-apps/) folder contains basic apps to demonstrate collecting traces with
@@ -95,6 +98,8 @@ Then run one of the language-based sample apps below:
 * Python (coming soon)
 * DotNET (coming soon)
 * Go (coming soon)
+
+Each of these sample apps works well with the [recipes](recipes) listed below.
 
 ## Recipes
 
