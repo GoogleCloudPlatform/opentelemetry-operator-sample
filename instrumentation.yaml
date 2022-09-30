@@ -24,6 +24,5 @@ spec:
     - baggage
     - b3
   sampler:
-    #type: parentbased_traceidratio
-    #argument: "0.25"
-    type: "always_off"
+    type: parentbased_traceidratio
+    argument: "0.25"
