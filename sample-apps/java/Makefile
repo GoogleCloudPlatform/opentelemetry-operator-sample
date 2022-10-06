@@ -15,6 +15,6 @@
 include ../../Makefile
 
 .PHONY: build
-build:
+build: sample-replace
 	./gradlew :service:jib --image=${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/java-sample-service
 	./gradlew :app:jib --image=${REGISTRY_LOCATION}-docker.pkg.dev/${GCLOUD_PROJECT}/${CONTAINER_REGISTRY}/java-sample-app
