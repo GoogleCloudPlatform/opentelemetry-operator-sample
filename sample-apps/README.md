@@ -4,7 +4,7 @@ This directory holds sample apps in various languages for working with
 the operator and auto-instrumentation. See below to get started:
 
 * [NodeJS](nodejs)
-* Java
+* [Java](java)
 * Python
 * DotNET
 * Go
