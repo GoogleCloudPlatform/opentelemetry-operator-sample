@@ -26,3 +26,14 @@ spec:
   sampler:
     type: parentbased_traceidratio
     argument: "0.25"
+
+  python:
+    env:
+    # Needed until https://github.com/open-telemetry/opentelemetry-python-contrib/issues/1361
+    # is fixed
+    - name: OTEL_METRICS_EXPORTER
+      value: none
+    # Python autoinstrumentation only supports OTLP/HTTP which the collector runs on port 4318,
+    # see https://github.com/open-telemetry/opentelemetry-operator/issues/924
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: http://otel-collector:4318

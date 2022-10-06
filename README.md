@@ -95,7 +95,7 @@ Then run one of the language-based sample apps below:
 
 * [NodeJS](sample-apps/nodejs)
 * Java (coming soon)
-* Python (coming soon)
+* [Python](sample-apps/python)
 * DotNET (coming soon)
 * Go (coming soon)
 
