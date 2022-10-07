@@ -8,9 +8,12 @@ running as a CronJob.
 * OpenTelemetry Operator installed in your cluster
 * Artifact Registry set up in your GCP project (see the 
 [main README.md](../../README.md#sample-applications))
-* An `Instrumentation` object already created in the current namespace
-  (such as [the sample `instrumentation.yaml`](#auto-instrumenting-applications)
-  from the main [README](../../README.md))
+* An `OpenTelemetryCollector` object already created in the current namespace,
+  such as [the sample `collector-config.yaml`](../../README.md#starting-the-Collector)
+  from the main [README](../../README.md)
+* An `Instrumentation` object already created in the current namespace,
+  such as [the sample `instrumentation.yaml`](../../README.md#auto-instrumenting-applications)
+  from the main [README](../../README.md)
 
 ## Running
 
@@ -34,3 +37,12 @@ running as a CronJob.
    kubectl patch cronjob.batch/javashowcase-app -p '{"spec":{"jobTemplate":{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java": "true"}}}}}}}'
    ```
    These commands will use the `Instrumentation` created as part of the Prerequisites.
+
+## View your Spans
+
+To stream logs from the otel-collector, which will include spans from this sample application, run:
+```
+kubectl logs deployment/otel-collector -f
+```
+
+Alternatively, follow the [cloud-trace recipe](../../recipes/cloud-trace/) to view your spans in Google Cloud Trace.
