@@ -29,12 +29,13 @@ spec:
     spec:
       containers:
         - name: pythonshowcase-app
-          # Re-use the node app to make the calls to the python server image
-          image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/nodejs-sample:latest
-          command: ['node', 'app.js']
+          image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/python-sample:latest
+          command: ['python', 'app.py']
           env:
           - name: "SERVICE_NAME"
             value: "http://pythonshowcase-service/"
+          - name: PYTHONUNBUFFERED
+            value: "1"
           resources:
             requests:
               memory: "256Mi"

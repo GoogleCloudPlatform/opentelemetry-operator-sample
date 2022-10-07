@@ -36,7 +36,7 @@ server listens for requests which the client makes on a timed loop.
 
 4. Run the following commands to patch the `app` and `server` deployments for auto-instrumentation:
    ```
-   kubectl patch deployment.apps/pythonshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
+   kubectl patch deployment.apps/pythonshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-python": "true"}}}}}'
    kubectl patch deployment.apps/pythonshowcase-service -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-python": "true"}}}}}'
    ```
    These commands will use the `Instrumentation` created as part of the Prerequisites.
