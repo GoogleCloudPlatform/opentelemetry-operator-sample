@@ -74,7 +74,7 @@ the operator in various languages:
 
 * [NodeJS](sample-apps/nodejs)
 * [Java](sample-apps/java)
-* Python (coming soon)
+* [Python](sample-apps/python)
 * DotNET (coming soon)
 * Go (coming soon)
 
