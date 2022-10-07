@@ -78,3 +78,14 @@ kubectl apply -f collector-config.yaml
 (This will overwrite any existing collector config, or create a new one if none exists.)
 
 Once the Collector restarts, you should see traces from your application
+
+## View your Spans
+
+Navigate to https://console.cloud.google.com/traces/list, and click on one of
+the traces to see its details. Make sure you are looking at the right GCP project.
+If you don't see any traces right away, enable auto-reload in the top-right to
+have the graph periodically refreshed.
+
+The NodeJS example app trace will look something like:
+
+![Screen Shot 2022-10-07 at 4 37 05 PM](https://user-images.githubusercontent.com/3262098/194649254-e75c5313-07e4-44dc-a807-e136a52d30c5.png)
