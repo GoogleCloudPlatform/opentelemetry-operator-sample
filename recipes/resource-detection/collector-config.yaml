@@ -27,7 +27,7 @@ spec:
 
     processors:
       resourcedetection:
-        detectors: [env, gce, gke]
+        detectors: [env, gcp]
         timeout: 2s
         override: false
 
