@@ -5,5 +5,5 @@ operator and auto-instrumentation. See below to get started:
 
 * [Trace sampling config](trace-sampling)
 * Trace filtering
-* Trace enhancements
+* [Trace enhancements](trace-enhancements)
 * [Cloud trace integration](cloud-trace)
