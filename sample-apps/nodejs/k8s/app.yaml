@@ -29,7 +29,6 @@ spec:
     spec:
       containers:
         - name: nodeshowcase-app
-          # Re-use the java app to make the calls to the node server image
           image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/nodejs-sample:latest
           command: ['node', 'app.js']
           env:
