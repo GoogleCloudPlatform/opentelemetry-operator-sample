@@ -33,6 +33,7 @@ spec:
 
     exporters:
       logging:
+        logLevel: debug
 
     service:
       pipelines:

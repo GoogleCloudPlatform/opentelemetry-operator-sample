@@ -35,3 +35,18 @@ Apply the `OpenTelemetryCollector` object from [`collector-config.yaml`](collect
 kubectl apply -f collector-config.yaml
 ```
 
+### Checking the modified spans
+
+To stream logs from the otel-collector, run:
+```
+kubectl logs deployment/otel-collector -f
+```
+
+In these, you should see resource attributes such as the following:
+
+```
+     -> cloud.provider: STRING(gcp)
+     -> cloud.platform: STRING(gcp_kubernetes_engine)
+     -> cloud.region: STRING(us-central1)
+     -> k8s.cluster.name: STRING(autopilot-cluster-1)
+```
