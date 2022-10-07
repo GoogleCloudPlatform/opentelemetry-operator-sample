@@ -12,10 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM python:3.10-alpine
+import os
+import time
+import requests
 
-WORKDIR /usr/src/app
-COPY server.py app.py requirements.txt ./
-RUN pip install -r requirements.txt
+service_url = os.environ['SERVICE_NAME']
+print(f"starting app for service at {service_url}")
 
-CMD [ "gunicorn", "server:app", "-b", "0.0.0.0:8080", "--access-logfile", "-" ]
+
+while True:
+    time.sleep(1)
+    try:
+        json = requests.get(service_url, timeout=10).json()
+        print(json)
+    except requests.RequestException as e:
+        print(e)
