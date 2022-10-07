@@ -89,6 +89,7 @@ operator and auto-instrumentation along with setup guides for each recipe. Curre
 * [Trace filtering](recipes/trace-filtering)
 * [Trace enhancements](recipes/trace-enhancements)
 * [Cloud Trace integration](recipes/cloud-trace)
+* [Resource detection](resource-detection)
 
 ## Contributing
 

@@ -7,3 +7,4 @@ operator and auto-instrumentation. See below to get started:
 * Trace filtering
 * [Trace enhancements](trace-enhancements)
 * [Cloud trace integration](cloud-trace)
+* [Resource detection](resource-detection)
