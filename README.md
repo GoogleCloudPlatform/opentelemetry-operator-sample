@@ -70,31 +70,10 @@ or skip right to the [recipes](recipes) if you already have an application runni
 ## Sample Applications
 
 The [`sample-apps/`](sample-apps/) folder contains basic apps to demonstrate collecting traces with
-the operator in various languages.
-
-Each sample app can be built as a container and deployed in a GKE cluster with a few
-commands. First, run `make setup` to create an Artifact Registry if you don't already
-have one:
-
-```
-export REGISTRY_LOCATION=us-central1
-export CONTAINER_REGISTRY=otel-operator
-make setup
-```
-
-The build and deploy commands for each app use the environment variables from above to run
-the container image from your registry, along with `GCLOUD_PROJECT`.
-
-Make sure to set the `GCLOUD_PROJECT` environment variable before running these:
-
-```
-export GCLOUD_PROJECT=my-gke-project
-```
-
-Then run one of the language-based sample apps below:
+the operator in various languages:
 
 * [NodeJS](sample-apps/nodejs)
-* Java (coming soon)
+* [Java](sample-apps/java)
 * [Python](sample-apps/python)
 * DotNET (coming soon)
 * Go (coming soon)
