@@ -5,7 +5,7 @@ the operator and auto-instrumentation. See below to get started:
 
 * [NodeJS](nodejs)
 * [Java](java)
-* Python
+* [Python](python)
 * DotNET
 * Go
 
