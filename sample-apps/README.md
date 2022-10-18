@@ -8,6 +8,7 @@ the operator and auto-instrumentation. See below to get started:
 * [Python](python)
 * DotNET
 * Go
+* [NodeJS + Java](nodejs-java)
 
 ## Setup
 
