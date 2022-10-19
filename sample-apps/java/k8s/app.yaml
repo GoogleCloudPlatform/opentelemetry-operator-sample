@@ -26,7 +26,7 @@ spec:
         spec:
           containers:
             - name: javashowcase-app
-              image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/java-sample-app:latest
+              image: "%REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/java-sample-app:latest"
               env:
               - name: "SERVICE_NAME"
                 value: "http://javashowcase-service/"

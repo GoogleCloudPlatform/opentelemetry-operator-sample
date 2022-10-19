@@ -38,7 +38,7 @@ spec:
     spec:
       containers:
         - name: pythonshowcase-service
-          image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/python-sample:latest
+          image: "%REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/python-sample:latest"
           ports:
             - containerPort: 8080
           env:
