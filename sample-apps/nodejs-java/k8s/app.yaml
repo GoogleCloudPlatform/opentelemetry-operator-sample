@@ -33,7 +33,7 @@ spec:
           command: ['node', 'app.js']
           env:
           - name: "SERVICE_NAME"
-            value: "http://nodeshowcase-service/"
+            value: "http://javashowcase-service/"
           resources:
             requests:
               memory: "256Mi"

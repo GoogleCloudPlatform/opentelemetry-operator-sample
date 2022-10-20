@@ -33,6 +33,6 @@ public class Main {
 
     @GetMapping("/")
     public String home() {
-        return "Hello World";
+        return "{\"response\":\"Hello World\"}";
     }
 }

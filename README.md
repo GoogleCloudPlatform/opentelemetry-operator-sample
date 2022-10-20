@@ -77,6 +77,7 @@ the operator in various languages:
 * [Python](sample-apps/python)
 * DotNET (coming soon)
 * Go (coming soon)
+* [NodeJS + Java](sample-apps/nodejs-java)
 
 Each of these sample apps works well with the [recipes](recipes) listed below.
 
