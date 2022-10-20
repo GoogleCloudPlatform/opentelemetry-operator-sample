@@ -1,0 +1,16 @@
+allowedCopyrightHolders:
+  - Google LLC
+  - OpenTelemetry Authors
+allowedLicenses:
+  - Apache-2.0
+sourceFileExtensions:
+  - go
+  - sh
+  - js
+  - py
+  - java
+  - yaml
+  - Makefile
+  - Dockerfile
+ignoreFiles:
+  - .github/**/*

@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: pythonshowcase-app
-          image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/python-sample:latest
+          image: "%REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/python-sample:latest"
           command: ['python', 'app.py']
           env:
           - name: "SERVICE_NAME"
