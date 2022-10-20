@@ -29,7 +29,7 @@ spec:
     spec:
       containers:
         - name: nodeshowcase-app
-          image: %REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/nodejs-sample:latest
+          image: "%REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/nodejs-sample:latest"
           command: ['node', 'app.js']
           env:
           - name: "SERVICE_NAME"
