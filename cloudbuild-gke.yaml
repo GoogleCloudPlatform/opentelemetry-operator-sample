@@ -13,19 +13,30 @@
 # limitations under the License.
 
 steps:
-  - id: "install"
-    name: "gcr.io/cloud-builders/gcloud"
+  - id: "cert-manager"
+    name: "gcr.io/cloud-builders/kubectl"
     env:
-      - "KUBECONFIG=/kube/config"
-      - "PROJECT_ID=$PROJECT_ID"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER}"
+      - "CLOUDSDK_COMPUTE_ZONE=${_ZONE}"
+    args: ['apply', '-f', 'https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml']
 
-        gcloud container clusters get-credentials "${_CLUSTER}" \
-        --project "$${PROJECT}" \
-        --zone "${_ZONE}"
+  - id: "install"
+    name: "gcr.io/cloud-builders/kubectl"
+    env:
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER}"
+      - "CLOUDSDK_COMPUTE_ZONE=${_ZONE}"
+    args: ['apply', '-f', 'https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml']
 
-        kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml
-        while ! kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml; do echo "Retrying"; sleep 5; done
+  - id: "cleanup-cert-manager"
+    name: "gcr.io/cloud-builders/kubectl"
+    env:
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER}"
+      - "CLOUDSDK_COMPUTE_ZONE=${_ZONE}"
+    args: ['delete', '-f', 'https://github.com/cert-manager/cert-manager/releases/download/v1.10.0/cert-manager.yaml']
+
+  - id: "cleanup-install"
+    name: "gcr.io/cloud-builders/kubectl"
+    env:
+      - "CLOUDSDK_CONTAINER_CLUSTER=${_CLUSTER}"
+      - "CLOUDSDK_COMPUTE_ZONE=${_ZONE}"
+    args: ['delete', '-f', 'https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml']
