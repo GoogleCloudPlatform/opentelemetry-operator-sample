@@ -18,7 +18,10 @@ Collector with the new config.
   for your cluster's service account (or Workload Identity setup as shown below).
 * A running GKE cluster
 * The OpenTelemetry Operator installed in your cluster
-* A Collector deployed with the Operator (recommended)
+* A Collector deployed with the Operator (recommended) or a ServiceAccount that can be used by the new Collector.
+  * Note: This recipe assumes that you already have a Collector ServiceAccount named `otel-collector`,
+    which is created by the operator when deploying an `OpenTelemetryCollector` object such as the
+    one [in this repo](../../collector-config.yaml).
 * An application already deployed that is either:
   * Instrumented to send traces to the Collector
   * Auto-instrumented by the Operator
@@ -59,6 +62,9 @@ gcloud iam service-accounts add-iam-policy-binding "otel-collector@${GCLOUD_PROJ
     --member "serviceAccount:${GCLOUD_PROJECT}.svc.id.goog[${COLLECTOR_NAMESPACE}/otel-collector]"
 ```
 
+**(Optional):** If you don't already have a ServiceAccount for the Collector (such as the one provided
+when deploying a prior OpenTelemetryCollector object), create it with `kubectl create serviceaccount otel-collector`.
+
 Finally, annotate the Collector's ServiceAccount to use Workload Identity:
 
 ```
@@ -89,3 +95,31 @@ have the graph periodically refreshed.
 The NodeJS example app trace will look something like:
 
 ![Screen Shot 2022-10-07 at 4 37 05 PM](https://user-images.githubusercontent.com/3262098/194649254-e75c5313-07e4-44dc-a807-e136a52d30c5.png)
+
+## Troubleshooting
+
+### rpc error: code = PermissionDenied
+
+An error such as the following:
+
+```
+2022/10/21 13:41:11 failed to export to Google Cloud Trace: rpc error: code = PermissionDenied desc = The caller does not have permission
+```
+
+This indicates that your Collector is unable to export spans, likely due to misconfigured IAM. Things to check:
+
+#### GKE (cluster-side) config issues
+
+With some configurations it's possible that the Operator could overwrite an existing ServiceAccount when deploying
+a new Collector. Ensure that the Collector's service account has the `iam.gke.io/gcp-service-account` annotation after
+running the `kubectl apply...` command in [Deploying the Recipe](#deploying-the-recipe). If this is missing, re-run the
+`kubectl annotate` command to add it to the ServiceAccount and restart the Collector Pod by deleting it (`kubectl delete pod/otel-collector-xxx..`).
+
+#### GCP (project-side) config issues
+
+Double check that IAM is properly configured for Cloud Trace access. This includes:
+
+* Verify the `otel-collector` service account exists in your GCP project
+* That service account must have `roles/cloudtrace.agent` permissions
+* The `serviceAccount:${GCLOUD_PROJECT}.svc.id.goog[${COLLECTOR_NAMESPACE}/otel-collector]` member must also be bound
+  to the `roles/iam.workloadIdentityUser` role (this identifies the Kubernetes ServiceAccount as able to use Workload Identity)
