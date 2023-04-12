@@ -20,6 +20,7 @@ This repo hosts samples for working with the OpenTelemetry Operator on GCP.
 * [Helm](https://helm.sh) (for GKE Autopilot)
 * `cert-manager` installed in your cluster
   * [Instructions here](https://cert-manager.io/docs/installation/)
+* (For private clusters): set up the [firewall rules](#firewall-rules) for cert-manager
 
 For GKE Autopilot, install `cert-manager` with the following [Helm](https://helm.sh) commands:
 ```
@@ -33,6 +34,31 @@ helm install \
   --set extraArgs={--issuer-ambient-credentials=true} \
   cert-manager jetstack/cert-manager
 ```
+
+#### Firewall rules
+
+By default, private GKE clusters may not allow the necessary ports for
+cert-manager to work, resulting in an error like the following:
+
+```
+Error from server (InternalError): error when creating "collector-config.yaml": Internal error occurred: failed calling webhook "mopentelemetrycollector.kb.io": failed to call webhook: Post "https://opentelemetry-operator-webhook-service.opentelemetry-operator-system.svc:443/mutate-opentelemetry-io-v1alpha1-opentelemetrycollector?timeout=10s": context deadline exceeded
+```
+
+To fix this, [create a firewall
+rule](https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#add_firewall_rules)
+for your cluster with the following command:
+
+```
+gcloud compute firewall-rules create cert-manager-9443 \
+  --source-ranges ${GKE_MASTER_CIDR} \
+  --target-tags ${GKE_MASTER_TAG}  \
+  --allow TCP:9443
+```
+
+`$GKE_MASTER_CIDR` and `$GKE_MASTER_TAG` can be found by following the steps in
+the [firewall
+docs](https://cloud.google.com/kubernetes-engine/docs/how-to/private-clusters#add_firewall_rules)
+listed above.
 
 ### Installing the OpenTelemetry Operator
 
