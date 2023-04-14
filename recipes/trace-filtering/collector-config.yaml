@@ -41,7 +41,7 @@ spec:
 
     exporters:
       logging:
-        logLevel: debug
+        loglevel: debug
 
     service:
       pipelines:
