@@ -29,7 +29,7 @@ spec:
     exporters:
       googlecloud:
       logging:
-        logLevel: debug
+        loglevel: debug
 
     service:
       pipelines:
