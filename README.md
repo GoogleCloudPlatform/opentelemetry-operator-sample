@@ -102,7 +102,7 @@ the operator in various languages:
 * [Java](sample-apps/java)
 * [Python](sample-apps/python)
 * DotNET (coming soon)
-* Go (coming soon)
+* [Go](sample-apps/go)
 * [NodeJS + Java](sample-apps/nodejs-java)
 
 Each of these sample apps works well with the [recipes](recipes) listed below.

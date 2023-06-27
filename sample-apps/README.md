@@ -7,7 +7,7 @@ the operator and auto-instrumentation. See below to get started:
 * [Java](java)
 * [Python](python)
 * DotNET
-* Go
+* [Go](go)
 * [NodeJS + Java](nodejs-java)
 
 ## Setup
