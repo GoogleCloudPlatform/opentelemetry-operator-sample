@@ -1,0 +1,40 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goshowcase-app
+spec:
+  selector:
+    matchLabels:
+      app: goshowcase-app
+  template:
+    metadata:
+      name: goshowcase-app
+      labels:
+        app: goshowcase-app
+    spec:
+      containers:
+        - name: goshowcase-app
+          image: "%REGISTRY_LOCATION%-docker.pkg.dev/%GCLOUD_PROJECT%/%CONTAINER_REGISTRY%/go-sample-app:latest"
+          command: ['/app/main']
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"
+      restartPolicy: Always
