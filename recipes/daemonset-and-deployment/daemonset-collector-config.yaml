@@ -19,6 +19,12 @@ metadata:
 spec:
   image: otel/opentelemetry-collector-contrib:latest
   mode: daemonset
+  resources:
+    requests:
+      cpu: 10m
+      memory: 60Mi
+    limits:
+      memory: 100Mi
   config: |
     receivers:
       otlp:
@@ -26,6 +32,10 @@ spec:
           grpc:
           http:
     processors:
+      memory_limiter:
+        check_interval: 1s
+        limit_percentage: 65
+        spike_limit_percentage: 20
 
     exporters:
       otlp:
