@@ -8,6 +8,13 @@ The daemonset is configured to send to the deployment collector by setting
 collector on each Kubernetes Node, and is configured with the `memory_limiter`
 processor to ensure it doesn't run into its memory limits and get OOM Killed.
 
+The deployment is configured with a persistent queue to enable it to buffer
+telemetry during a network outage. To do this, it includes an `emptyDir` volume
+and requests `1Gi` of `ephemeral-storage` space to ensure it has guaranteed access
+to disk space for buffering. It configures the `file_storage` extension to make
+that disk space available to exporters in the collector, and configures the `googlecloud`
+exporter's `sending_queue` to use that storage for storing items in the queue.
+
 If overwriting an existing `OpenTelemetryCollector` object (i.e., you already have a running
 Collector through the Operator such as the one from the
 [main README](../../README.md#starting-the-collector)), the Operator will update that existing
