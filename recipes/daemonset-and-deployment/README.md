@@ -4,8 +4,11 @@ This recipe demonstrates how to configure the OpenTelemetry Collector
 (as deployed by the Operator) to run as a daemonset and deployment.
 
 The daemonset is configured to send to the deployment collector by setting 
-`endpoint: otel-deployment-collector:4317` in the OTLP exporter. If
-overwriting an existing `OpenTelemetryCollector` object (i.e., you already have a running
+`endpoint: otel-deployment-collector:4317` in the OTLP exporter. It runs one
+collector on each Kubernetes Node, and is configured with the `memory_limiter`
+processor to ensure it doesn't run into its memory limits and get OOM Killed.
+
+If overwriting an existing `OpenTelemetryCollector` object (i.e., you already have a running
 Collector through the Operator such as the one from the
 [main README](../../README.md#starting-the-collector)), the Operator will update that existing
 Collector with the new config. The [main instrumentation.yaml](../../instrumentation.yaml)
