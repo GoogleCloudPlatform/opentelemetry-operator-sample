@@ -32,12 +32,10 @@ spec:
         endpoint: otel-deployment-collector:4317
         tls:
           insecure: true
-      logging:
-        loglevel: debug
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [logging, otlp]
+          exporters: [otlp]

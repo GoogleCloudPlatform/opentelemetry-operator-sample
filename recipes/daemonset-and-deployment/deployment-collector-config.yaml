@@ -28,12 +28,10 @@ spec:
 
     exporters:
       googlecloud:
-      logging:
-        loglevel: debug
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [logging, googlecloud]
+          exporters: [googlecloud]
