@@ -26,11 +26,11 @@ spec:
     limits:
       memory: 140Mi
   volumeMounts:
-  - mountPath: /var/lib/persistentstorage
-    name: persistentstorage
+  - mountPath: /var/lib/buffered-telemetry
+    name: buffered-telemetry
   volumes:
   - emptyDir: {}
-    name: persistentstorage
+    name: buffered-telemetry
   config: |
     receivers:
       otlp:
@@ -39,7 +39,7 @@ spec:
           http:
     extensions:
       file_storage:
-        directory: /var/lib/persistentstorage
+        directory: /var/lib/buffered-telemetry
         timeout: 10s
 
     exporters:
