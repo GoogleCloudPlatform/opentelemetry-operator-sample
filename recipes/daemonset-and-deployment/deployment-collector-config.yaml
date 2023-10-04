@@ -18,18 +18,37 @@ metadata:
   name: otel-deployment
 spec:
   image: otel/opentelemetry-collector-contrib:latest
+  resources:
+    requests:
+      cpu: 50m
+      memory: 100Mi
+      ephemeral-storage: 1Gi
+    limits:
+      memory: 140Mi
+  volumeMounts:
+  - mountPath: /var/lib/persistentstorage
+    name: persistentstorage
+  volumes:
+  - emptyDir: {}
+    name: persistentstorage
   config: |
     receivers:
       otlp:
         protocols:
           grpc:
           http:
-    processors:
+    extensions:
+      file_storage:
+        directory: /var/lib/persistentstorage
+        timeout: 10s
 
     exporters:
       googlecloud:
+        sending_queue:
+          storage: file_storage
 
     service:
+      extensions: [file_storage]
       pipelines:
         traces:
           receivers: [otlp]
