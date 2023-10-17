@@ -22,6 +22,22 @@ Collector with the new config. The [main instrumentation.yaml](../../instrumenta
 is configured to send to the daemonset to demonstrate forwarding metrics from a
 local daemonset pod to a deployment.
 
+## Why both?
+
+Why would you want to run both a daemonset and deployment?
+
+The answer is simple: You need a daemonset because you're observing data local to each kubernetes node
+but you'd like the *scalability* of a deployment.
+
+By using both, you can gain the flexibility you need to scale your observability:
+
+- Local node observability can be limited to the daemonset, e.g.
+  - `hostmetrics` receiver
+  - container logs (via [`filelog` receiver](https://opentelemetry.io/docs/kubernetes/collector/components/#filelog-receiver))
+- Instrumentation can still point at the deployment, ensuring you can scale horizontally with load.
+- The `memory_limiter` on the daemonset helps drop o11y to remain within scaling limits.
+- The persistent queue on the deployment helps deal with network outages when sending telemetry out of the cluster.
+
 ## Prerequisites
 
 * Cloud Trace API enabled in your GCP project
