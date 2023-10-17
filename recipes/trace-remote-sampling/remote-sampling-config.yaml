@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: remote-sampling-config
+data:
+  sampling.json: |
+     {
+       "default_strategy": {
+         "type":"probabilistic",
+         "param": 0.5
+       }
+     }
