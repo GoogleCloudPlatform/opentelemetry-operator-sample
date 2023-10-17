@@ -16,9 +16,23 @@ var http = require("http");
 
 console.log("serving on port 8080...")
 
+var serviceURL = process.env.NEXT_SERVER
+
 var listener = function (req, res) {
-  res.writeHead(200);
-  res.end(JSON.stringify({data: "Hello world"}));
+
+  if (serviceURL) {
+    http.get(serviceURL, resp => {
+      let data = ''
+      resp.on('data', d => { data += d });
+      resp.on('end', () => { 
+        res.writeHead(200);
+        res.end(data);
+      });
+    });
+  } else {
+    res.writeHead(200);
+    res.end(JSON.stringify({data: "Hello world"}));
+  }
 };
 var server = http.createServer(listener);
 
