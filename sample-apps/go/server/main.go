@@ -16,12 +16,35 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
+	"os"
 )
 
+func remoteHello(nextServer string) string {
+	resp, err := http.Get(nextServer)
+	if err != nil {
+		log.Fatal(err)
+	}
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = resp.Body.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(body)
+}
+
 func hello(w http.ResponseWriter, _ *http.Request) {
-	fmt.Fprintf(w, "hello\n")
+	url, exists := os.LookupEnv("NEXT_SERVER")
+	if !exists {
+		fmt.Fprintf(w, "hello\n")
+	} else {
+		fmt.Fprintf(w, "%s\n", remoteHello(url))
+	}
 }
 
 func main() {
