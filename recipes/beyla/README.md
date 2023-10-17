@@ -20,6 +20,9 @@ Collector with the new config.
 
 ## Prerequisites
 
+[!WARNING]  
+Beyla only works with GKE standard clusters, because GKE Auto restricts the use of privileged pods.
+
 * Cloud Trace and Cloud Monitoring APIs enabled in your GCP project
 * The `roles/cloudtrace.agent` and `roles/monitoring.metricWriter`
   [IAM permissions](https://cloud.google.com/trace/docs/iam#roles)
@@ -31,7 +34,7 @@ Collector with the new config.
     which is created by the operator when deploying an `OpenTelemetryCollector` object such as the
     one [in this repo](../../collector-config.yaml).
 * An application already deployed that makes or serves HTTP requests:
-  * Note: Beyla does not currently support HTTPs or gRPC
+  * Note: Beyla does not currently support HTTPS or gRPC
   * [One of the sample apps](../../sample-apps) from this repo, without auto-instrumentation enabled.
 
 Note that the `OpenTelemetryCollector` object needs to be in the same namespace as your sample
@@ -41,9 +44,8 @@ app, or the Collector endpoint needs to be updated to point to the correct servi
 
 ### Workload Identity Setup
 
-If you have Workload Identity enabled (on by default in GKE Autopilot), you'll need to set
-up a service account with permission to write traces to Cloud Trace. You can do this with
-the following commands:
+If you have Workload Identity enabled, you'll need to set up a service account with permission to
+write traces to Cloud Trace. You can do this with the following commands:
 
 ```
 export GCLOUD_PROJECT=<your GCP project ID>
