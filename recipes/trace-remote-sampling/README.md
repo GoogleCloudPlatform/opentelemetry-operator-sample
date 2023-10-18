@@ -40,23 +40,15 @@ kubectl apply -f instrumentation.yaml
 
 This creates a new object named `instrumentation/trace-remote-sampling` in the current namespace.
 
+> Note that `jaeger_remote` sampler configuration is
+> only available in Java and Go as of 2023-10-18.
+
 Annotate your application pods to use these settings by editing the `instrumentation.opentelemetry.io`
 annotation using one of the following commands:
 
 > Note that if the app is a standalone Pod you can
 >`kubectl annotate` directly on the Pod, but if it is owned by a Deployment or other replica controller
 > you must patch the metadata of the Pod template.
-
-* **NodeJS:**
-
-  Pod:
-  ```
-  kubectl annotate pod/<APP-NAME> instrumentation.opentelemetry.io/inject-nodejs="trace-remote-sampling"
-  ```
-  Deployment:
-  ```
-  kubectl patch deployment.apps/<APP-NAME> -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "trace-remote-sampling"}}}}}'
-  ```
 
 * **Java:**
 
@@ -67,28 +59,6 @@ annotation using one of the following commands:
   Deployment:
   ```
   kubectl patch deployment.apps/<APP-NAME> -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java": "trace-remote-sampling"}}}}}'
-  ```
-
-* **Python:**
-
-  Pod:
-  ```
-  kubectl annotate pod/<APP-NAME> instrumentation.opentelemetry.io/inject-python="trace-remote-sampling"
-  ```
-  Deployment:
-  ```
-  kubectl patch deployment.apps/<APP-NAME> -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-python": "trace-remote-sampling"}}}}}'
-  ```
-
-* **DotNET:**
-
-  Pod:
-  ```
-  kubectl annotate pod/<APP-NAME> instrumentation.opentelemetry.io/inject-python="trace-remote-sampling"
-  ```
-  Deployment:
-  ```
-  kubectl patch deployment.apps/<APP-NAME> -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-dotnet": "trace-remote-sampling"}}}}}'
   ```
 
 # Tuning

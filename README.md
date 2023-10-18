@@ -113,6 +113,7 @@ The [`recipes`](recipes/) directory holds different sample use cases for working
 operator and auto-instrumentation along with setup guides for each recipe. Currently there are:
 
 * [Trace sampling configuration](recipes/trace-sampling)
+* [Trace remote sampling config](recipes/trace-remote-sampling)
 * [Trace filtering](recipes/trace-filtering)
 * [Trace enhancements](recipes/trace-enhancements)
 * [Cloud Trace integration](recipes/cloud-trace)
