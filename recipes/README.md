@@ -9,3 +9,5 @@ operator and auto-instrumentation. See below to get started:
 * [Trace enhancements](trace-enhancements)
 * [Cloud trace integration](cloud-trace)
 * [Resource detection](resource-detection)
+* [Daemonset and Deployment](daemonset-and-deployment)
+* [eBPF HTTP Observability with Beyla](beyla)

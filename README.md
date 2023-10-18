@@ -118,6 +118,8 @@ operator and auto-instrumentation along with setup guides for each recipe. Curre
 * [Trace enhancements](recipes/trace-enhancements)
 * [Cloud Trace integration](recipes/cloud-trace)
 * [Resource detection](recipes/resource-detection)
+* [Daemonset and Deployment](recipes/daemonset-and-deployment)
+* [eBPF HTTP Observability with Beyla](recipes/beyla)
 
 ## Contributing
 
