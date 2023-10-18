@@ -17,7 +17,7 @@ This recipe provides three main pieces of configuration:
 
 ## Running
 
-Apply the `ConfigMap` object from [`sampling-config.yaml`](sampling-config.yaml)
+Apply the `ConfigMap` object from [`remote-sampling-config.yaml`](remote-sampling-config.yaml)
 
 ```
 kubectl apply -f remote-sampling-config.yaml
@@ -32,7 +32,7 @@ Apply the `OpenTelemetryCollector` object from [`collector-config.yaml`](collect
 kubectl apply -f collector-config.yaml
 ```
 
-Next, create the `Instrumentation` object from [`instrumetnation.yaml`](instrumentation.yaml) that will use the remote sampling service:
+Next, create the `Instrumentation` object from [`instrumentation.yaml`](instrumentation.yaml) that will use the remote sampling service:
 
 ```
 kubectl apply -f instrumentation.yaml
