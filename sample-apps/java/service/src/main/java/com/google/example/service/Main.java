@@ -21,10 +21,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandlers;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 @RestController
 @SpringBootApplication
 public class Main {
+    private static Logger logger = Logger.getLogger("Main");
 
     public static void main(String[] args) throws IOException {
         com.google.example.utilities.Logging.initializeLogging();
@@ -33,6 +39,30 @@ public class Main {
 
     @GetMapping("/")
     public String home() {
+        String service = System.getenv("NEXT_SERVER");
+        if (service != null) {
+            return remoteHelloWorld(service);
+        }
+        return helloWorld();
+    }
+
+    private String remoteHelloWorld(String nextServer) {
+        try {
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpResponse<String> response =
+            httpClient.send(java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(nextServer))
+                .timeout(java.time.Duration.ofMinutes(2))
+                .GET()
+                .build(), BodyHandlers.ofString());
+            return response.body();
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "failed to connect to next server", e);
+            return "{\"response\":\"Failure\"}";
+        }
+    }
+
+    private String helloWorld() {
         return "{\"response\":\"Hello World\"}";
     }
 }

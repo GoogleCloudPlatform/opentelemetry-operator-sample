@@ -15,6 +15,7 @@
 import os
 from flask import Flask
 from flask.json import jsonify
+import requests
 
 app = Flask(__name__)
 
@@ -22,4 +23,12 @@ print(os.environ)
 
 @app.route("/")
 def hello_world():
-    return jsonify({"data": "Hello world"})
+    if 'NEXT_SERVER' in os.environ.keys():
+        try:
+            json = requests.get(os.environ['NEXT_SERVER'], timeout=10).json()
+            return json
+        except requests.RequestException as e:
+            return jsonify({"error": e})
+    else:
+        return jsonify({"data": "Hello world"})
+
