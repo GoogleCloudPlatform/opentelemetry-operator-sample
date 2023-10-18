@@ -69,7 +69,7 @@ To tune sampling in the cluster, simply update the `remote-sampling-config.yaml`
 kubectl apply -f remote-sampling-config.yaml
 ```
 
-The OpenTelemetryCollector deployment should pick up changes within a few seconds of the ConfigMap rollout, and clients will further pull in those changes within a few minutes.
+The OpenTelemetryCollector deployment should pick up changes within a few minutes of the ConfigMap rollout, and clients will further pull in those changes within a few minutes.
 
 This can help, e.g. when needing to increase the sampling rate of a service for better observability "on the fly" and turn it back down after collecting enough data.
 
