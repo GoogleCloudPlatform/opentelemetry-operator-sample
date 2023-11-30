@@ -42,10 +42,31 @@ app, or the Collector endpoint needs to be updated to point to the correct servi
 
 ## Running
 
+### Deploying the Recipe
+
+Apply the `OpenTelemetryCollector` object from this recipe:
+
+```
+kubectl apply -f collector-config.yaml
+```
+
+(This will overwrite any existing collector config, or create a new one if none exists.)
+
+Once the Collector restarts, apply the Beyla Daemonset:
+
+```
+kubectl apply -f beyla-daemonset.yaml
+```
+
+This will begin creating metrics and traces for all http traffic on each node,
+and exporting them to Google Cloud.
+
 ### Workload Identity Setup
 
-If you have Workload Identity enabled, you'll need to set up a service account with permission to
-write traces to Cloud Trace. You can do this with the following commands:
+If you have Workload Identity enabled, you'll see permissions errors after deploying the recipe.
+You need to set up a GCP service account with permission to write traces to Cloud Trace, and allow
+the Collector's Kubernetes service account to act as your GCP service account. You can do this with
+the following commands:
 
 ```
 export GCLOUD_PROJECT=<your GCP project ID>
@@ -80,32 +101,13 @@ gcloud iam service-accounts add-iam-policy-binding "otel-collector@${GCLOUD_PROJ
 **(Optional):** If you don't already have a ServiceAccount for the Collector (such as the one provided
 when deploying a prior OpenTelemetryCollector object), create it with `kubectl create serviceaccount otel-collector`.
 
-Finally, annotate the Collector's ServiceAccount to use Workload Identity:
+Finally, annotate the OpenTelemetryCollector Object to allow the Collector's ServiceAccount to use Workload Identity:
 
 ```
-kubectl annotate serviceaccount otel-collector \
+kubectl annotate opentelemetrycollector otel \
     --namespace $COLLECTOR_NAMESPACE \
     iam.gke.io/gcp-service-account=otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com
 ```
-
-### Deploying the Recipe
-
-Apply the `OpenTelemetryCollector` object from this recipe:
-
-```
-kubectl apply -f collector-config.yaml
-```
-
-(This will overwrite any existing collector config, or create a new one if none exists.)
-
-Once the Collector restarts, apply the Beyla Daemonset:
-
-```
-kubectl apply -f beyla-daemonset.yaml
-```
-
-This will begin creating metrics and traces for all http traffic on each node,
-and exporting them to Google Cloud.
 
 ## View your Spans and Metrics
 
