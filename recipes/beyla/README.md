@@ -17,7 +17,6 @@ object (i.e., you already have a running Collector through the Operator such as 
 [main README](../../README.md#starting-the-collector)), the Operator will update that existing
 Collector with the new config.
 
-
 ## Prerequisites
 
 [!WARNING]  
