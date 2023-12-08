@@ -62,10 +62,10 @@ listed above.
 
 ### Installing the OpenTelemetry Operator
 
-Install the latest release of the Operator with:
+Install the the Operator with:
 
 ```
-kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/latest/download/opentelemetry-operator.yaml
+kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/download/v0.89.0/opentelemetry-operator.yaml
 ```
 
 ### Starting the Collector

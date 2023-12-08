@@ -17,7 +17,7 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  image: otel/opentelemetry-collector-contrib:latest
+  image: otel/opentelemetry-collector-contrib:0.90.0
   config: |
     receivers:
       otlp:

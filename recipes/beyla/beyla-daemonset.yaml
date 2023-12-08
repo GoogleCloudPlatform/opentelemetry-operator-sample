@@ -37,10 +37,10 @@ spec:
           resources:
             requests:
               cpu: 10m
-              memory: 60Mi
-            limits:
               memory: 100Mi
-          image: grafana/beyla:latest
+            limits:
+              memory: 500Mi
+          image: grafana/beyla:0.4.1
           ports:
           - name: metrics
             containerPort: 8080
@@ -52,9 +52,9 @@ spec:
               value: "http://otel-collector:4317"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
-            - name: SYSTEM_WIDE
+            - name: BEYLA_SYSTEM_WIDE
               value: "true"
-            - name: SKIP_GO_SPECIFIC_TRACERS
+            - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
               value: "true"
-            - name: METRICS_REPORT_TARGET # This is high cardinality, but useful for showing the power of ebpf
-              value: "true"
+            - name: BEYLA_METRICS_INTERVAL
+              value: "30s"
