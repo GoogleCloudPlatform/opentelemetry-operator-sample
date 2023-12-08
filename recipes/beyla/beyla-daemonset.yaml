@@ -40,7 +40,7 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
-          image: grafana/beyla:1.0.1
+          image: grafana/beyla:0.4.1
           ports:
           - name: metrics
             containerPort: 8080
