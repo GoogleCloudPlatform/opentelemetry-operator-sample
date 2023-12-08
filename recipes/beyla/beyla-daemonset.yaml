@@ -27,11 +27,7 @@ spec:
       labels:
         app: beyla
     spec:
-      # TODO: define narrower permisisons requirements
       hostPID: true
-      hostNetwork: true
-      hostIPC: true
-      dnsPolicy: ClusterFirstWithHostNet
       containers:
         - name: beyla
           resources:
@@ -41,17 +37,12 @@ spec:
             limits:
               memory: 500Mi
           image: grafana/beyla:0.4.1
-          ports:
-          - name: metrics
-            containerPort: 8080
           securityContext:
             runAsUser: 0
             privileged: true
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
               value: "http://otel-collector:4317"
-            - name: OTEL_EXPORTER_OTLP_PROTOCOL
-              value: "grpc"
             - name: BEYLA_SYSTEM_WIDE
               value: "true"
             - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
