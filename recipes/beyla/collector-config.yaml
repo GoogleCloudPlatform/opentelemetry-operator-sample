@@ -79,6 +79,8 @@ spec:
         metrics:
           metric:
             - resource.attributes["k8s.pod.name"] == nil
+      # Transform metrics to match GMP http server conventions:
+      # https://cloud.google.com/stackdriver/docs/managed-prometheus/exporters/server/http
       transform/prometheusconventions:
         metric_statements:
           - context: metric
