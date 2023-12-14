@@ -40,6 +40,19 @@ spec:
           - name: http.route
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.server
+      # convert spans into an http.servicegraph.* metric
+      spanmetrics/httpservicegraph:
+        histogram:
+          disable: true
+        dimensions:
+          - name: http.method
+            default: GET
+          - name: http.status_code
+          - name: net.host.name
+          - name: http.route
+          - name: net.sock.peer.addr
+        exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
+        namespace: http.servicegraph
     processors:
       # filter down to only non-local http server spans
       filter/httpserveronly:
@@ -116,8 +129,12 @@ spec:
         traces:
           receivers: [otlp]
           processors: [filter/httpserveronly]
-          exporters: [spanmetrics/httpserver]
+          exporters: [spanmetrics/httpserver, spanmetrics/httpservicegraph, googlecloud]
         metrics/spanmetrics:
           receivers: [spanmetrics/httpserver]
+          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
+          exporters: [logging, googlemanagedprometheus]
+        metrics/httpservicegraph:
+          receivers: [spanmetrics/httpservicegraph]
           processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
