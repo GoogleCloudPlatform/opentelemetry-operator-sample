@@ -65,6 +65,11 @@ spec:
             from_attribute: net.host.name
             action: insert
       k8sattributes:
+        extract:
+          metadata:
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.namespace.name
         pod_association:
           - sources:
             - from: resource_attribute
@@ -74,11 +79,33 @@ spec:
         metrics:
           metric:
             - resource.attributes["k8s.pod.name"] == nil
+      transform/prometheusconventions:
+        metric_statements:
+          - context: metric
+            statements:
+              - set(name, "http_request_duration") where name == "http.server.duration"
+              - set(name, "http_requests") where name == "http.server.calls"
+          - context: datapoint
+            statements:
+              - set(attributes["code"], attributes["http.status_code"])
+              - delete_key(attributes, "http.status_code")
+              - set(attributes["method"], attributes["http.method"])
+              - delete_key(attributes, "http.method")
+              # GMP metrics are expected to be double
+              - set(value_double, Double(value_int))
+      resource/podinstance:
+        attributes:
+          - key: pod
+            from_attribute: k8s.pod.name
+            action: upsert
+          - key: service.instance.id
+            from_attribute: k8s.pod.uid
+            action: upsert
     exporters:
       googlemanagedprometheus:
         metric:
           resource_filters:
-            - regex: 'k8s\..*\.name'
+            - regex: 'pod'
       googlecloud:
       logging:
         loglevel: debug
@@ -90,5 +117,5 @@ spec:
           exporters: [spanmetrics/httpserver]
         metrics/spanmetrics:
           receivers: [spanmetrics/httpserver]
-          processors: [resourcedetection, groupbyattrs, resource, k8sattributes, filter/podonly]
+          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
