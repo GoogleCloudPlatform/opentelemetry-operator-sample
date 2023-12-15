@@ -70,8 +70,7 @@ func getQuery() string {
 			k8s_pod_ip, net_sock_peer_addr, k8s_pod_name
 		) (
 			rate(http_servicegraph_calls_total[%s])
-		)
-		`,
+		)`,
 		*queryWindow,
 	)
 }
