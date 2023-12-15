@@ -40,7 +40,7 @@ spec:
           - name: http.route
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.server
-      # convert spans into an http.servicegraph.* metric
+      # convert spans into an http.servicegraph.calls metric
       spanmetrics/httpservicegraph:
         histogram:
           disable: true
@@ -129,12 +129,8 @@ spec:
         traces:
           receivers: [otlp]
           processors: [filter/httpserveronly]
-          exporters: [spanmetrics/httpserver, spanmetrics/httpservicegraph, googlecloud]
+          exporters: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
         metrics/spanmetrics:
-          receivers: [spanmetrics/httpserver]
-          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
-          exporters: [logging, googlemanagedprometheus]
-        metrics/httpservicegraph:
-          receivers: [spanmetrics/httpservicegraph]
+          receivers: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
           processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
