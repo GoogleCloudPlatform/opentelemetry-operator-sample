@@ -107,13 +107,16 @@ func getCNode(node *Node, graph *cgraph.Graph, nodes map[*Node]*cgraph.Node) (*c
 	if node, ok := nodes[node]; ok {
 		return node, nil
 	}
+
 	cnode, err := graph.CreateNode(node.Ip)
-	if node.Name != "" {
-		cnode.SetLabel(node.Name)
-	}
 	if err != nil {
 		return nil, err
 	}
+	if node.Name != "" {
+		cnode.SetLabel(node.Name)
+	}
+	cnode.SetOrdering(cgraph.OutOrdering)
+
 	nodes[node] = cnode
 	return cnode, nil
 }
