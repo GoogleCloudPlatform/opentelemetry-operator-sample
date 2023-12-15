@@ -32,22 +32,16 @@ import (
 )
 
 var (
-	projectId = flag.String("projectId", "", "The projectID to query")
+	projectId   = flag.String("projectId", "", "The projectID to query")
+	queryWindow = flag.Duration("queryWindow", time.Minute*5, "Query window for service graph metrics")
 )
 
 const (
-	query = `
-	sum by (
-		k8s_pod_ip, net_sock_peer_addr, k8s_pod_name, code, job, namespace
-	) (
-		rate(http_servicegraph_calls_total[1h])
-	)
-	`
 	// metrics are based on server side, so the peer is the caller (client) and pod is the
 	// callee (server)
-	clientIpKey = "net_sock_peer_addr"
-	serverIpKey = "k8s_pod_ip"
-	sererPodKey = "k8s_pod_name"
+	clientIpKey  = "net_sock_peer_addr"
+	serverIpKey  = "k8s_pod_ip"
+	serverPodKey = "k8s_pod_name"
 )
 
 func main() {
@@ -70,6 +64,17 @@ func main() {
 	slog.InfoContext(ctx, "Got graph list", "graph", graph)
 }
 
+func getQuery() string {
+	return fmt.Sprintf(
+		`sum by (
+			k8s_pod_ip, net_sock_peer_addr, k8s_pod_name
+		) (
+			rate(http_servicegraph_calls_total[%s])
+		)`,
+		*queryWindow,
+	)
+}
+
 func queryPrometheus(ctx context.Context) (*internal.Graph, error) {
 	roundTripper, err := apihttp.NewTransport(
 		ctx,
@@ -88,7 +93,7 @@ func queryPrometheus(ctx context.Context) (*internal.Graph, error) {
 	}
 
 	promApi := v1.NewAPI(client)
-	res, warnings, err := promApi.Query(ctx, query, time.Now())
+	res, warnings, err := promApi.Query(ctx, getQuery(), time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +113,7 @@ func queryPrometheus(ctx context.Context) (*internal.Graph, error) {
 	for _, sample := range vec {
 		labels := sample.Metric
 		client := &internal.Node{Ip: string(labels[clientIpKey])}
-		server := &internal.Node{Ip: string(labels[serverIpKey]), Name: string(labels[sererPodKey])}
+		server := &internal.Node{Ip: string(labels[serverIpKey]), Name: string(labels[serverPodKey])}
 		graph.AddEdge(client, server)
 	}
 	return graph, nil
