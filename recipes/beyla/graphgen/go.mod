@@ -1,6 +1,6 @@
 module github.com/GoogleCloudPlatform/opentelemetry-operator-sample/recipes/beyla/graphgen
 
-go 1.22
+go 1.20
 
 require (
 	github.com/goccy/go-graphviz v0.1.2
