@@ -43,6 +43,19 @@ app, or the Collector endpoint needs to be updated to point to the correct servi
 
 ### Deploying the Recipe
 
+Apply the role-based access control (RBAC) configuration:
+
+```
+kubectl apply -f rbac.yaml
+```
+
+This allows the Collector's `k8sattributes` processor to read additional metadata from the
+Kubernetes API to enrich the telemetry. See [`k8sattributes`
+documentation](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/v0.90.0/processor/k8sattributesprocessor/README.md#role-based-access-control)
+for more information. If you are deploying the `OpenTelemetryCollector` object in a namespace
+other than `default`, make sure to update the `namespace` property of the ServiceAccount in
+[`rbac.yaml`](rbac.yaml#L38).
+
 Apply the `OpenTelemetryCollector` object from this recipe:
 
 ```
