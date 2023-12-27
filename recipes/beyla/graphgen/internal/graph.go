@@ -17,7 +17,6 @@ package internal
 import (
 	"io"
 	"log/slog"
-	"os"
 
 	"github.com/goccy/go-graphviz"
 	"github.com/goccy/go-graphviz/cgraph"
@@ -96,8 +95,7 @@ func (g Graph) Render(writer io.Writer) error {
 		}
 	}
 
-	// print to stdout
-	if err := gv.Render(graph, graphviz.SVG, os.Stdout); err != nil {
+	if err := gv.Render(graph, graphviz.SVG, writer); err != nil {
 		return err
 	}
 	return nil

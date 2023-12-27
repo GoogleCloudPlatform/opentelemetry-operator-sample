@@ -25,8 +25,6 @@ import (
 
 	"github.com/GoogleCloudPlatform/opentelemetry-operator-sample/recipes/beyla/graphgen/internal"
 	"github.com/prometheus/client_golang/api"
-	v1 "github.com/prometheus/client_golang/api/prometheus/v1"
-	"github.com/prometheus/common/model"
 	"google.golang.org/api/option"
 	apihttp "google.golang.org/api/transport/http"
 )
@@ -54,28 +52,27 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*20)
 	defer cancel()
 
-	graph, err := queryPrometheus(ctx)
+	client, err := createPromApiClient(ctx)
+	if err != nil {
+		slog.ErrorContext(ctx, "Got error creating prometheus api client")
+		panic(err)
+	}
+
+	graph, err := internal.QueryPrometheus(ctx, client, *queryWindow)
 	if err != nil {
 		slog.ErrorContext(ctx, "Got error querying prometheus", "err", err)
 		panic(err)
 	}
-	outputGraph(graph)
-
 	slog.InfoContext(ctx, "Got graph list", "graph", graph)
+
+	err = graph.Render(os.Stdout)
+	if err != nil {
+		slog.ErrorContext(ctx, "Got error rendering graph", "err", err)
+		panic(err)
+	}
 }
 
-func getQuery() string {
-	return fmt.Sprintf(
-		`sum by (
-			k8s_pod_ip, net_sock_peer_addr, k8s_pod_name
-		) (
-			rate(http_servicegraph_calls_total[%s])
-		)`,
-		*queryWindow,
-	)
-}
-
-func queryPrometheus(ctx context.Context) (*internal.Graph, error) {
+func createPromApiClient(ctx context.Context) (api.Client, error) {
 	roundTripper, err := apihttp.NewTransport(
 		ctx,
 		http.DefaultTransport,
@@ -84,41 +81,8 @@ func queryPrometheus(ctx context.Context) (*internal.Graph, error) {
 	if err != nil {
 		return nil, err
 	}
-	client, err := api.NewClient(api.Config{
+	return api.NewClient(api.Config{
 		Address:      fmt.Sprintf("https://monitoring.googleapis.com/v1/projects/%v/location/global/prometheus", *projectId),
 		RoundTripper: roundTripper,
 	})
-	if err != nil {
-		return nil, err
-	}
-
-	promApi := v1.NewAPI(client)
-	res, warnings, err := promApi.Query(ctx, getQuery(), time.Now())
-	if err != nil {
-		return nil, err
-	}
-
-	if len(warnings) != 0 {
-		slog.WarnContext(ctx, "Warnings from promQL query", "warnings", warnings)
-	}
-	slog.InfoContext(ctx, "Got metrics", "metrics", res)
-	slog.InfoContext(ctx, "type", "type", res.Type())
-
-	vec, ok := res.(model.Vector)
-	if !ok {
-		return nil, fmt.Errorf("couldn't cast %v to vector", res)
-	}
-
-	graph := internal.NewGraph()
-	for _, sample := range vec {
-		labels := sample.Metric
-		client := &internal.Node{Ip: string(labels[clientIpKey])}
-		server := &internal.Node{Ip: string(labels[serverIpKey]), Name: string(labels[serverPodKey])}
-		graph.AddEdge(client, server)
-	}
-	return graph, nil
-}
-
-func outputGraph(g *internal.Graph) error {
-	return g.Render(os.Stdout)
 }
