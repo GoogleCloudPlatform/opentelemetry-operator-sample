@@ -19,8 +19,8 @@ Collector with the new config.
 
 ## Prerequisites
 
-[!WARNING]  
-Beyla only works with GKE standard clusters, because GKE Auto restricts the use of privileged pods.
+> [!WARNING]  
+> Beyla only works with GKE standard clusters, because GKE Auto restricts the use of privileged pods.
 
 * Cloud Trace and Cloud Monitoring APIs enabled in your GCP project
 * The `roles/cloudtrace.agent` and `roles/monitoring.metricWriter`
