@@ -36,12 +36,12 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
-          image: grafana/beyla:0.4.1
+          image: grafana/beyla:1.2.0
           securityContext:
             runAsUser: 0
             privileged: true
           env:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: "http://otel-collector:4317"
             - name: BEYLA_SYSTEM_WIDE
               value: "true"
@@ -49,3 +49,8 @@ spec:
               value: "true"
             - name: BEYLA_METRICS_INTERVAL
               value: "30s"
+            - name: BEYLA_METRICS_REPORT_CACHE_LEN
+              value: "256"
+            - name: BEYLA_TRACES_REPORT_CACHE_LEN
+              value: "256"
+              
