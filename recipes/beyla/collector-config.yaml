@@ -36,7 +36,7 @@ spec:
           - name: http.request.method
             default: GET
           - name: http.response.status_code
-          - name: net.host.name
+          - name: server.address
           - name: http.route
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.server.request
@@ -48,7 +48,7 @@ spec:
           - name: http.request.method
             default: GET
           - name: http.response.status_code
-          - name: net.host.name
+          - name: server.address
           - name: http.route
           - name: net.sock.peer.addr
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
@@ -61,21 +61,21 @@ spec:
           span:
             - attributes["http.request.method"] == nil
             - kind.string != "Server"
-            - attributes["net.host.name"] == "127.0.0.1"
+            - attributes["server.address"] == "127.0.0.1"
       # detect gke resource attributes
       resourcedetection:
         detectors: [env, gcp]
         timeout: 2s
         override: false
-      # Move net.host.name from a metric attribute to a resource attribute so we can use it to get k8s attributes.
+      # Move server.address from a metric attribute to a resource attribute so we can use it to get k8s attributes.
       groupbyattrs:
         keys:
-          - net.host.name
-      # Assume net.host.name is a pod IP address
+          - server.address
+      # Assume server.address is a pod IP address
       resource:
         attributes:
           - key: k8s.pod.ip
-            from_attribute: net.host.name
+            from_attribute: server.address
             action: insert
       k8sattributes:
         extract:
