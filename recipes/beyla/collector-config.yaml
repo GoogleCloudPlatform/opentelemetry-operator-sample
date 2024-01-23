@@ -35,7 +35,7 @@ spec:
         dimensions:
           - name: http.request.method
             default: GET
-          - name: http.status_code
+          - name: http.response.status_code
           - name: net.host.name
           - name: http.route
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
@@ -47,7 +47,7 @@ spec:
         dimensions:
           - name: http.request.method
             default: GET
-          - name: http.status_code
+          - name: http.response.status_code
           - name: net.host.name
           - name: http.route
           - name: net.sock.peer.addr
@@ -102,8 +102,8 @@ spec:
               - set(name, "http_requests") where name == "http.server.request.calls"
           - context: datapoint
             statements:
-              - set(attributes["code"], attributes["http.status_code"])
-              - delete_key(attributes, "http.status_code")
+              - set(attributes["code"], attributes["http.response.status_code"])
+              - delete_key(attributes, "http.response.status_code")
               - set(attributes["method"], attributes["http.request.method"])
               - delete_key(attributes, "http.request.method")
               # GMP metrics are expected to be double
