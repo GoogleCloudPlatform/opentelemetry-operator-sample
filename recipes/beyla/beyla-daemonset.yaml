@@ -53,4 +53,3 @@ spec:
               value: "256"
             - name: BEYLA_TRACES_REPORT_CACHE_LEN
               value: "256"
-              
