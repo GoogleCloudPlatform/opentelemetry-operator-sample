@@ -35,7 +35,7 @@ const testJson = `{
         "metric": {
           "k8s_pod_ip": "10.112.0.0",
           "k8s_pod_name": "child1",
-          "net_sock_peer_addr": "10.112.1.100"
+          "client_address": "10.112.1.100"
         },
         "value": [1703024317.243, "0.09666750444003214"]
       },
@@ -43,7 +43,7 @@ const testJson = `{
         "metric": {
           "k8s_pod_ip": "10.112.0.1",
           "k8s_pod_name": "child2",
-          "net_sock_peer_addr": "10.112.1.100"
+          "client_address": "10.112.1.100"
         },
         "value": [1703024317.243, "0.09666750444003214"]
       },
@@ -51,7 +51,7 @@ const testJson = `{
         "metric": {
           "k8s_pod_ip": "10.112.0.2",
           "k8s_pod_name": "leaf",
-          "net_sock_peer_addr": "10.112.0.1"
+          "client_address": "10.112.0.1"
         },
         "value": [1703024317.243, "0.09666750444003214"]
       }

@@ -50,7 +50,7 @@ spec:
           - name: http.response.status_code
           - name: server.address
           - name: http.route
-          - name: network.peer.address
+          - name: client.address
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.servicegraph
     processors:

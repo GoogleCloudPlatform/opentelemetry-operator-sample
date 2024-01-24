@@ -28,7 +28,7 @@ import (
 const (
 	// metrics are based on server side, so the peer is the caller (client) and pod is the
 	// callee (server)
-	clientIpKey  = "net_sock_peer_addr"
+	clientIpKey  = "client_address"
 	serverIpKey  = "k8s_pod_ip"
 	serverPodKey = "k8s_pod_name"
 )
@@ -64,7 +64,7 @@ func QueryPrometheus(ctx context.Context, client api.Client, queryWindow time.Du
 func getQuery(queryWindow time.Duration) string {
 	return fmt.Sprintf(
 		`sum by (
-			k8s_pod_ip, net_sock_peer_addr, k8s_pod_name
+			k8s_pod_ip, client_address, k8s_pod_name
 		) (
 			rate(http_servicegraph_calls_total[%s])
 		)`,

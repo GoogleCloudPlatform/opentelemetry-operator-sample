@@ -37,7 +37,7 @@ var (
 const (
 	// metrics are based on server side, so the peer is the caller (client) and pod is the
 	// callee (server)
-	clientIpKey  = "net_sock_peer_addr"
+	clientIpKey  = "client_address"
 	serverIpKey  = "k8s_pod_ip"
 	serverPodKey = "k8s_pod_name"
 )
