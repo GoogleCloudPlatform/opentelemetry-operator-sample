@@ -1,4 +1,3 @@
-import gradle.kotlin.dsl.accessors._5cbe0d75cf8ee73441f17a7e57de6851.jib
 import org.gradle.api.tasks.Copy
 import org.gradle.kotlin.dsl.*
 
