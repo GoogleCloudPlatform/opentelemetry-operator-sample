@@ -26,6 +26,10 @@ spec:
     metadata:
       labels:
         app: beyla
+      annotations:
+        # allow beyla to write to /sys/fs/bpf by setting the
+        # apparmor policy to unconfined.
+        container.apparmor.security.beta.kubernetes.io/beyla: "unconfined"
     spec:
       hostPID: true
       containers:
@@ -39,7 +43,11 @@ spec:
           image: grafana/beyla:1.2.0
           securityContext:
             runAsUser: 0
-            privileged: true
+            readOnlyRootFilesystem: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - SYS_PTRACE
           env:
             - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: "http://otel-collector:4317"
@@ -53,3 +61,12 @@ spec:
               value: "256"
             - name: BEYLA_TRACES_REPORT_CACHE_LEN
               value: "256"
+            - name: BEYLA_BPF_FS_BASE_DIR
+              value: "/sys/fs/bpf"
+          volumeMounts:
+          - name: bpffs
+            mountPath: /sys/fs/bpf
+      volumes:
+      - name: bpffs
+        hostPath:
+          path: /sys/fs/bpf
