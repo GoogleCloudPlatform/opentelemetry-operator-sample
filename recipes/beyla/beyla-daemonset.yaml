@@ -42,12 +42,16 @@ spec:
               memory: 500Mi
           image: grafana/beyla:1.2.0
           securityContext:
+            seccompProfile:
+              type: RuntimeDefault
             runAsUser: 0
             readOnlyRootFilesystem: true
             capabilities:
               add:
                 - SYS_ADMIN
                 - SYS_PTRACE
+              drop:
+                - ALL
           env:
             - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: "http://otel-collector:4317"
