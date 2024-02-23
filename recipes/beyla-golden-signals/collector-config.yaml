@@ -1,0 +1,123 @@
+# Copyright 2023 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: opentelemetry.io/v1alpha1
+kind: OpenTelemetryCollector
+metadata:
+  name: otel
+spec:
+  image: otel/opentelemetry-collector-contrib:0.90.0
+  config: |
+    receivers:
+      # receive OTLP spans from Beyla
+      otlp:
+        protocols:
+          grpc:
+          http:
+    connectors:
+      # convert spans into an http.server.request.duration metric
+      spanmetrics/httpserver:
+        histogram:
+          unit: 's'
+          explicit:
+            buckets: [10us, 50us, 100us, 200us, 400us, 800us, 1ms, 2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s]
+        dimensions:
+          - name: http.request.method
+            default: GET
+          - name: http.response.status_code
+          - name: server.address
+          - name: http.route
+        exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
+        namespace: http.server.request
+    processors:
+      # filter down to only non-local http server spans
+      filter/httpserveronly:
+        error_mode: ignore
+        traces:
+          span:
+            - attributes["http.request.method"] == nil
+            - kind.string != "Server"
+            - attributes["server.address"] == "127.0.0.1"
+      # detect gke resource attributes
+      resourcedetection:
+        detectors: [env, gcp]
+        timeout: 2s
+        override: false
+      # Move server.address from a metric attribute to a resource attribute so we can use it to get k8s attributes.
+      groupbyattrs:
+        keys:
+          - server.address
+      # Assume server.address is a pod IP address
+      resource:
+        attributes:
+          - key: k8s.pod.ip
+            from_attribute: server.address
+            action: insert
+      k8sattributes:
+        extract:
+          metadata:
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.namespace.name
+        pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+      # Filter out metrics that aren't about pods
+      filter/podonly:
+        metrics:
+          metric:
+            - resource.attributes["k8s.pod.name"] == nil
+      # Transform metrics to match GMP http server conventions:
+      # https://cloud.google.com/stackdriver/docs/managed-prometheus/exporters/server/http
+      transform/prometheusconventions:
+        metric_statements:
+          - context: metric
+            statements:
+              - set(name, "http_request_duration") where name == "http.server.request.duration"
+              - set(name, "http_requests") where name == "http.server.request.calls"
+          - context: datapoint
+            statements:
+              - set(attributes["code"], attributes["http.response.status_code"])
+              - delete_key(attributes, "http.response.status_code")
+              - set(attributes["method"], attributes["http.request.method"])
+              - delete_key(attributes, "http.request.method")
+              # GMP metrics are expected to be double
+              - set(value_double, Double(value_int))
+      resource/podinstance:
+        attributes:
+          - key: pod
+            from_attribute: k8s.pod.name
+            action: upsert
+          - key: service.instance.id
+            from_attribute: k8s.pod.uid
+            action: upsert
+    exporters:
+      googlemanagedprometheus:
+        metric:
+          resource_filters:
+            - regex: 'pod'
+      googlecloud:
+      logging:
+        loglevel: debug
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [filter/httpserveronly]
+          exporters: [spanmetrics/httpserver]
+        metrics/spanmetrics:
+          receivers: [spanmetrics/httpserver]
+          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
+          exporters: [logging, googlemanagedprometheus]
