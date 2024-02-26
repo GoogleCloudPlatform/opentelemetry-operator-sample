@@ -41,7 +41,9 @@ spec:
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.server.request
     processors:
-      # filter down to only non-local http server spans
+      # filter down to only non-local http server spans. If the server address is localhost, we
+      # can't differentiate pods from each other, since we use the server address as the pod IP
+      # in a later step.
       filter/httpserveronly:
         error_mode: ignore
         traces:
