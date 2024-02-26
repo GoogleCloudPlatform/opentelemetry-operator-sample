@@ -1,0 +1,76 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: beyla-agent
+  labels:
+    app: beyla
+spec:
+  selector:
+    matchLabels:
+      app: beyla
+  template:
+    metadata:
+      labels:
+        app: beyla
+      annotations:
+        # allow beyla to write to /sys/fs/bpf by setting the
+        # apparmor policy to unconfined.
+        container.apparmor.security.beta.kubernetes.io/beyla: "unconfined"
+    spec:
+      hostPID: true
+      containers:
+        - name: beyla
+          resources:
+            requests:
+              cpu: 10m
+              memory: 100Mi
+            limits:
+              memory: 500Mi
+          image: grafana/beyla:1.2.0
+          securityContext:
+            seccompProfile:
+              type: RuntimeDefault
+            runAsUser: 0
+            readOnlyRootFilesystem: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - SYS_PTRACE
+              drop:
+                - ALL
+          env:
+            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
+              value: "http://otel-collector:4317"
+            - name: BEYLA_SYSTEM_WIDE
+              value: "true"
+            - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
+              value: "true"
+            - name: BEYLA_METRICS_INTERVAL
+              value: "30s"
+            - name: BEYLA_METRICS_REPORT_CACHE_LEN
+              value: "256"
+            - name: BEYLA_TRACES_REPORT_CACHE_LEN
+              value: "256"
+            - name: BEYLA_BPF_FS_BASE_DIR
+              value: "/sys/fs/bpf"
+          volumeMounts:
+          - name: bpffs
+            mountPath: /sys/fs/bpf
+      volumes:
+      - name: bpffs
+        hostPath:
+          path: /sys/fs/bpf

@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -40,23 +40,10 @@ spec:
           - name: http.route
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.server.request
+    processors:
       # filter down to only non-local http server spans. If the server address is localhost, we
       # can't differentiate pods from each other, since we use the server address as the pod IP
       # in a later step.
-      spanmetrics/httpservicegraph:
-        histogram:
-          disable: true
-        dimensions:
-          - name: http.request.method
-            default: GET
-          - name: http.response.status_code
-          - name: server.address
-          - name: http.route
-          - name: client.address
-        exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
-        namespace: http.servicegraph
-    processors:
-      # filter down to only non-local http server spans
       filter/httpserveronly:
         error_mode: ignore
         traces:
@@ -131,8 +118,8 @@ spec:
         traces:
           receivers: [otlp]
           processors: [filter/httpserveronly]
-          exporters: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
+          exporters: [spanmetrics/httpserver]
         metrics/spanmetrics:
-          receivers: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
+          receivers: [spanmetrics/httpserver]
           processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
