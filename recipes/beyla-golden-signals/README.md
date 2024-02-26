@@ -1,11 +1,11 @@
 # eBPF HTTP Golden Signals with Beyla
 
 This recipe demonstrates how to configure the OpenTelemetry Collector (as deployed by the
-Operator) to send [Beyla](https://github.com/grafana/beyla) golden signals (RED metrics) to
-[Google Managed Service for
+Operator) to produce golden signal metrics from [Beyla](https://github.com/grafana/beyla) spans
+and send those metrics to [Google Managed Service for
 Prometheus](https://cloud.google.com/stackdriver/docs/managed-prometheus).
 
-In this recipe, Beyla is configured to collect HTTP RED metrics from all
+In this recipe, Beyla is configured to collect http traces from all
 workloads in the cluster without any code changes. Beyla has other features,
 such as auto-instrumentation for Go applications, but this sample does not use
 it for that purpose.
