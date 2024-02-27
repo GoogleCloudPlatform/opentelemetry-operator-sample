@@ -10,4 +10,5 @@ operator and auto-instrumentation. See below to get started:
 * [Cloud trace integration](cloud-trace)
 * [Resource detection](resource-detection)
 * [Daemonset and Deployment](daemonset-and-deployment)
-* [eBPF HTTP Observability with Beyla](beyla)
+* [eBPF HTTP Golden Signals with Beyla](beyla-golden-signals)
+* [eBPF HTTP Service Graph with Beyla](beyla-service-graph)
