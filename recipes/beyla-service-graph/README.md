@@ -1,11 +1,12 @@
-# eBPF HTTP Observability with Beyla
+# eBPF HTTP Service Graph with Beyla
 
-This recipe demonstrates how to configure the OpenTelemetry Collector
-(as deployed by the Operator) to send [Beyla](https://github.com/grafana/beyla)
-metric and trace data to GCP [Cloud Trace](https://cloud.google.com/trace) and
-[Google Managed Service for Prometheus](https://cloud.google.com/stackdriver/docs/managed-prometheus).
+This recipe demonstrates how to configure the OpenTelemetry Collector (as deployed by the
+Operator) to produce service graph metrics from [Beyla](https://github.com/grafana/beyla) spans
+and send those metrics to [Google Managed Service for
+Prometheus](https://cloud.google.com/stackdriver/docs/managed-prometheus). You can use the
+`graphgen` script to visualize the service graph from the metrics in your GCP project.
 
-In this recipe, Beyla is configured to collect http metrics and traces from all
+In this recipe, Beyla is configured to collect http traces from all
 workloads in the cluster without any code changes. Beyla has other features,
 such as auto-instrumentation for Go applications, but this sample does not use
 it for that purpose.
@@ -22,10 +23,10 @@ Collector with the new config.
 > [!WARNING]  
 > Beyla only works with GKE standard clusters, because GKE Auto restricts the use of privileged pods.
 
-* Cloud Trace and Cloud Monitoring APIs enabled in your GCP project
-* The `roles/cloudtrace.agent` and `roles/monitoring.metricWriter`
-  [IAM permissions](https://cloud.google.com/trace/docs/iam#roles)
-  for your cluster's service account (or Workload Identity setup as shown below).
+* Cloud Monitoring API enabled in your GCP project
+* The `roles/monitoring.metricWriter`
+  [IAM permissions](https://cloud.google.com/trace/docs/iam#roles) for your cluster's service
+  account (or Workload Identity setup as shown below).
 * A running (non-autopilot) GKE cluster
 * The OpenTelemetry Operator installed in your cluster
 * A Collector deployed with the Operator (recommended) or a ServiceAccount that can be used by the new Collector.
@@ -70,8 +71,8 @@ Once the Collector restarts, apply the Beyla Daemonset:
 kubectl apply -f beyla-daemonset.yaml
 ```
 
-This will begin creating metrics and traces for all http traffic on each node,
-and exporting them to Google Cloud.
+This will begin creating metrics for all http traffic on each node, and exporting them to
+Google Managed Service for Prometheus.
 
 ### Workload Identity Setup
 
@@ -121,12 +122,18 @@ kubectl annotate opentelemetrycollector otel \
     iam.gke.io/gcp-service-account=otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com
 ```
 
-## View your Spans and Metrics
+## View your Service Graph
 
-Navigate to the Trace explorer and view the traces created by Beyla.
+Navigate to the Metrics explorer and look for the `http_servicegraph_calls_total` metric. This
+metric counts the number of calls between each pod. To visualize this metric, run the
+`graphgen` script which queries the metric from your project and outputs an SVG:
 
-Navigate to the Metrics explorer and look for the `http_server_duration` and
-`http_client_duration` metrics.
+```sh
+cd graphgen
+go run main.go -projectId="$GCLOUD_PROJECT" > graph.svg
+```
+
+![sample graphgen output](./graphgen/out.svg)
 
 ## Troubleshooting
 
@@ -149,9 +156,9 @@ running the `kubectl apply...` command in [Deploying the Recipe](#deploying-the-
 
 #### GCP (project-side) config issues
 
-Double check that IAM is properly configured for Cloud Trace access. This includes:
+Double check that IAM is properly configured for Cloud Monitoring access. This includes:
 
 * Verify the `otel-collector` service account exists in your GCP project
-* That service account must have `roles/cloudtrace.agent` permissions
+* That service account must have `roles/monitoring.metricWriter` permissions
 * The `serviceAccount:${GCLOUD_PROJECT}.svc.id.goog[${COLLECTOR_NAMESPACE}/otel-collector]` member must also be bound
   to the `roles/iam.workloadIdentityUser` role (this identifies the Kubernetes ServiceAccount as able to use Workload Identity)

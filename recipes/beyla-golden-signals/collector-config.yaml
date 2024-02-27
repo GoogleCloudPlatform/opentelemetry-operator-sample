@@ -119,7 +119,7 @@ spec:
           receivers: [otlp]
           processors: [filter/httpserveronly]
           exporters: [spanmetrics/httpserver]
-        metrics/spanmetrics:
+        metrics:
           receivers: [spanmetrics/httpserver]
           processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]

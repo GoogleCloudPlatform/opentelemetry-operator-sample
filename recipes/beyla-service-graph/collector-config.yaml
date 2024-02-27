@@ -26,23 +26,7 @@ spec:
           grpc:
           http:
     connectors:
-      # convert spans into an http.server.request.duration metric
-      spanmetrics/httpserver:
-        histogram:
-          unit: 's'
-          explicit:
-            buckets: [10us, 50us, 100us, 200us, 400us, 800us, 1ms, 2ms, 4ms, 6ms, 8ms, 10ms, 50ms, 100ms, 200ms, 400ms, 800ms, 1s, 1400ms, 2s, 5s, 10s, 15s]
-        dimensions:
-          - name: http.request.method
-            default: GET
-          - name: http.response.status_code
-          - name: server.address
-          - name: http.route
-        exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
-        namespace: http.server.request
-      # filter down to only non-local http server spans. If the server address is localhost, we
-      # can't differentiate pods from each other, since we use the server address as the pod IP
-      # in a later step.
+      # convert spans into an http.servicegraph.calls metric
       spanmetrics/httpservicegraph:
         histogram:
           disable: true
@@ -131,8 +115,8 @@ spec:
         traces:
           receivers: [otlp]
           processors: [filter/httpserveronly]
-          exporters: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
-        metrics/spanmetrics:
-          receivers: [spanmetrics/httpserver, spanmetrics/httpservicegraph]
+          exporters: [spanmetrics/httpservicegraph]
+        metrics:
+          receivers: [spanmetrics/httpservicegraph]
           processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
