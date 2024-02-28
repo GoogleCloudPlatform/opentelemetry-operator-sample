@@ -1,11 +1,11 @@
 # eBPF HTTP Golden Signals with Beyla
 
 This recipe demonstrates how to configure the OpenTelemetry Collector (as deployed by the
-Operator) to produce golden signal metrics from [Beyla](https://github.com/grafana/beyla) spans
-and send those metrics to [Google Managed Service for
+Operator) to produce golden signal metrics from [Beyla](https://github.com/grafana/beyla) http
+metrics and send those metrics to [Google Managed Service for
 Prometheus](https://cloud.google.com/stackdriver/docs/managed-prometheus).
 
-In this recipe, Beyla is configured to collect http traces from all
+In this recipe, Beyla is configured to generate http metrics from all
 workloads in the cluster without any code changes. Beyla has other features,
 such as auto-instrumentation for Go applications, but this sample does not use
 it for that purpose.
@@ -49,11 +49,11 @@ Apply the role-based access control (RBAC) configuration:
 kubectl apply -f rbac.yaml
 ```
 
-This allows the Collector's `k8sattributes` processor to read additional metadata from the
-Kubernetes API to enrich the telemetry. See [`k8sattributes`
-documentation](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/v0.90.0/processor/k8sattributesprocessor/README.md#role-based-access-control)
-for more information. If you are deploying the `OpenTelemetryCollector` object in a namespace
-other than `default`, make sure to update the `namespace` property of the ServiceAccount in
+This allows the Beyla agent to read additional metadata from the Kubernetes API to enrich the
+telemetry. See [Configuring Kubernetes metadata
+decoration](https://grafana.com/docs/beyla/latest/setup/kubernetes/#configuring-kubernetes-metadata-decoration)
+for more information. If you are deploying the Beyla Daemonset in a namespace other than
+`default`, make sure to update the `namespace` property of the ServiceAccount in
 [`rbac.yaml`](rbac.yaml#L38).
 
 Apply the `OpenTelemetryCollector` object from this recipe:
@@ -121,6 +121,7 @@ kubectl annotate opentelemetrycollector otel \
     iam.gke.io/gcp-service-account=otel-collector@${GCLOUD_PROJECT}.iam.gserviceaccount.com
 ```
 
+this section is outdated
 ## View your Metrics
 
 Navigate to the Metrics explorer and look for the `http_server_duration` and
