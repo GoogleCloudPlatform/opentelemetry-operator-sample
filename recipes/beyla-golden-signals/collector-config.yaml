@@ -51,7 +51,6 @@ spec:
               - set(unit, "1") where name == "http.server.duration_count"
               - set(name, "http_requests") where name == "http.server.duration_count"
               # Rename duration histogram
-              # TODO: change to copy_metric once collector is upgraded
               - set(name, "http_request_duration") where name == "http.server.duration"
           - context: datapoint
             statements:
