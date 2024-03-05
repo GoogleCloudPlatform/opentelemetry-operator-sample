@@ -58,20 +58,6 @@ spec:
           env:
             - name: BEYLA_CONFIG_PATH
               value: "/config/beyla-config.yml"
-            - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
-              value: "http://otel-collector:4317"
-            - name: BEYLA_KUBE_METADATA_ENABLE
-              value: "true"
-            - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
-              value: "true"
-            - name: BEYLA_METRICS_INTERVAL
-              value: "30s"
-            - name: BEYLA_METRICS_REPORT_CACHE_LEN
-              value: "256"
-            - name: BEYLA_TRACES_REPORT_CACHE_LEN
-              value: "256"
-            - name: BEYLA_BPF_FS_BASE_DIR
-              value: "/sys/fs/bpf"
           volumeMounts:
           - name: bpffs
             mountPath: /sys/fs/bpf
@@ -96,3 +82,12 @@ data:
       services:
       # only gather metrics from workloads running as a pod
       - k8s_pod_name: .+
+      skip_go_specific_tracers: true
+    otel_metrics_export:
+      endpoint: http://otel-collector:4317
+      interval: 30s
+    attributes:
+      kubernetes:
+        enable: true
+    ebpf:
+      bpf_fs_base_dir: /sys/fs/bpf
