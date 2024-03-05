@@ -56,11 +56,11 @@ spec:
               drop:
                 - ALL
           env:
+            - name: BEYLA_CONFIG_PATH
+              value: "/config/beyla-config.yml"
             - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
               value: "http://otel-collector:4317"
             - name: BEYLA_KUBE_METADATA_ENABLE
-              value: "true"
-            - name: BEYLA_SYSTEM_WIDE
               value: "true"
             - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
               value: "true"
@@ -75,7 +75,24 @@ spec:
           volumeMounts:
           - name: bpffs
             mountPath: /sys/fs/bpf
+          - name: beyla-config
+            mountPath: /config
       volumes:
       - name: bpffs
         hostPath:
           path: /sys/fs/bpf
+      - name: beyla-config
+        configMap:
+          name: beyla-config
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beyla-config
+data:
+  beyla-config.yml: |
+    discovery:
+      services:
+      # only gather metrics from workloads running as a pod
+      - k8s_pod_name: .+
