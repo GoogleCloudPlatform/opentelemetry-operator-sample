@@ -31,6 +31,7 @@ spec:
         # apparmor policy to unconfined.
         container.apparmor.security.beta.kubernetes.io/beyla: "unconfined"
     spec:
+      serviceAccountName: beyla
       hostPID: true
       containers:
         - name: beyla
@@ -40,8 +41,10 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
-          image: grafana/beyla:1.2.0
+          image: grafana/beyla:1.3.3
           securityContext:
+            # TODO(#78) without priviledged gives error "attaching socket filter: operation not permitted"
+            privileged: true
             seccompProfile:
               type: RuntimeDefault
             runAsUser: 0
@@ -53,24 +56,38 @@ spec:
               drop:
                 - ALL
           env:
-            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-              value: "http://otel-collector:4317"
-            - name: BEYLA_SYSTEM_WIDE
-              value: "true"
-            - name: BEYLA_SKIP_GO_SPECIFIC_TRACERS
-              value: "true"
-            - name: BEYLA_METRICS_INTERVAL
-              value: "30s"
-            - name: BEYLA_METRICS_REPORT_CACHE_LEN
-              value: "256"
-            - name: BEYLA_TRACES_REPORT_CACHE_LEN
-              value: "256"
-            - name: BEYLA_BPF_FS_BASE_DIR
-              value: "/sys/fs/bpf"
+            - name: BEYLA_CONFIG_PATH
+              value: "/config/beyla-config.yml"
           volumeMounts:
           - name: bpffs
             mountPath: /sys/fs/bpf
+          - name: beyla-config
+            mountPath: /config
       volumes:
       - name: bpffs
         hostPath:
           path: /sys/fs/bpf
+      - name: beyla-config
+        configMap:
+          name: beyla-config
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: beyla-config
+data:
+  beyla-config.yml: |
+    discovery:
+      services:
+      # only gather metrics from workloads running as a pod
+      - k8s_pod_name: .+
+      skip_go_specific_tracers: true
+    otel_traces_export:
+      endpoint: http://otel-collector:4317
+      interval: 30s
+    attributes:
+      kubernetes:
+        enable: true
+    ebpf:
+      bpf_fs_base_dir: /sys/fs/bpf

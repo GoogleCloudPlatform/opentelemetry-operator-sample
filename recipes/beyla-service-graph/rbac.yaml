@@ -1,4 +1,4 @@
-# Copyright 2023 Google LLC
+# Copyright 2024 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,31 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# See https://grafana.com/docs/beyla/latest/setup/kubernetes/#configuring-kubernetes-metadata-decoration
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: beyla
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: otel-collector
+  name: beyla
 rules:
-- apiGroups: [""]
-  resources: ["pods", "namespaces", "nodes"]
-  verbs: ["get", "watch", "list"]
-- apiGroups: ["apps"]
-  resources: ["replicasets"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["extensions"]
-  resources: ["replicasets"]
-  verbs: ["get", "list", "watch"]
-
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "watch"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: otel-collector
+  name: beyla
 subjects:
-- kind: ServiceAccount
-  name: otel-collector
-  namespace: default
+  - kind: ServiceAccount
+    name: beyla
+    namespace: default
 roleRef:
-  kind: ClusterRole
-  name: otel-collector
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: beyla
