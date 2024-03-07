@@ -86,6 +86,8 @@ data:
     otel_traces_export:
       endpoint: http://otel-collector:4317
       interval: 30s
+    # Kubernetes decoration must be enabled to use k8s_pod_name service discovery
+    # https://github.com/grafana/beyla/issues/673
     attributes:
       kubernetes:
         enable: true

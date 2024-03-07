@@ -37,9 +37,6 @@ spec:
           - name: server.address
           - name: http.route
           - name: client.address
-          - name: k8s.pod.name
-          - name: k8s.pod.uid
-          - name: k8s.namespace.name
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
         namespace: http.servicegraph
     processors:
@@ -66,8 +63,29 @@ spec:
           - key: k8s.pod.ip
             from_attribute: server.address
             action: insert
+      k8sattributes:
+        extract:
+          metadata:
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.namespace.name
+        pod_association:
+          - sources:
+            - from: resource_attribute
+              name: k8s.pod.ip
+      # Filter out metrics that aren't about pods
+      filter/podonly:
+        metrics:
+          metric:
+            - resource.attributes["k8s.pod.name"] == nil
+      # Transform metrics to match GMP http server conventions:
+      # https://cloud.google.com/stackdriver/docs/managed-prometheus/exporters/server/http
       transform/prometheusconventions:
         metric_statements:
+          - context: metric
+            statements:
+              - set(name, "http_request_duration") where name == "http.server.request.duration"
+              - set(name, "http_requests") where name == "http.server.request.calls"
           - context: datapoint
             statements:
               - set(attributes["code"], attributes["http.response.status_code"])
@@ -100,5 +118,5 @@ spec:
           exporters: [spanmetrics/httpservicegraph]
         metrics:
           receivers: [spanmetrics/httpservicegraph]
-          processors: [groupbyattrs, resource, resource/podinstance, transform/prometheusconventions, resourcedetection]
+          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
           exporters: [logging, googlemanagedprometheus]
