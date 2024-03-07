@@ -30,16 +30,10 @@ import (
 )
 
 var (
-	projectId   = flag.String("projectId", "", "The projectID to query")
-	queryWindow = flag.Duration("queryWindow", time.Minute*5, "Query window for service graph metrics")
-)
-
-const (
-	// metrics are based on server side, so the peer is the caller (client) and pod is the
-	// callee (server)
-	clientIpKey  = "client_address"
-	serverIpKey  = "k8s_pod_ip"
-	serverPodKey = "k8s_pod_name"
+	projectId   = flag.String("projectId", "", "Required. The projectID to query.")
+	cluster     = flag.String("cluster", "", "The GKE cluster to filter in the query. If not set, does no filtering.")
+	namespace   = flag.String("namespace", "", "The k8s namespace to filter in the query. If not set, does no filtering.")
+	queryWindow = flag.Duration("queryWindow", time.Minute*5, "Query window for service graph metrics.")
 )
 
 func main() {
@@ -58,7 +52,15 @@ func main() {
 		panic(err)
 	}
 
-	graph, err := internal.QueryPrometheus(ctx, client, *queryWindow)
+	graph, err := internal.QueryPrometheus(
+		ctx,
+		client,
+		internal.QueryArgs{
+			QueryWindow: *queryWindow,
+			Cluster:     *cluster,
+			Namespace:   *namespace,
+		},
+	)
 	if err != nil {
 		slog.ErrorContext(ctx, "Got error querying prometheus", "err", err)
 		panic(err)

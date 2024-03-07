@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/prometheus/client_golang/api"
@@ -26,16 +27,27 @@ import (
 )
 
 const (
-	// metrics are based on server side, so the peer is the caller (client) and pod is the
-	// callee (server)
-	clientIpKey  = "client_address"
-	serverIpKey  = "k8s_pod_ip"
-	serverPodKey = "k8s_pod_name"
+	clientIpKey = "client_address"
+	clientKey   = "client"
+	serverIpKey = "server_address"
+	serverKey   = "server"
 )
 
-func QueryPrometheus(ctx context.Context, client api.Client, queryWindow time.Duration) (*Graph, error) {
+type QueryArgs struct {
+	QueryWindow time.Duration
+	Cluster     string
+	Namespace   string
+}
+
+func QueryPrometheus(
+	ctx context.Context,
+	client api.Client,
+	queryArgs QueryArgs,
+) (*Graph, error) {
 	promApi := v1.NewAPI(client)
-	res, warnings, err := promApi.Query(ctx, getQuery(queryWindow), time.Now())
+	query := getQuery(queryArgs)
+	slog.InfoContext(ctx, "logging", "query", query)
+	res, warnings, err := promApi.Query(ctx, query, time.Now())
 	if err != nil {
 		return nil, err
 	}
@@ -54,20 +66,30 @@ func QueryPrometheus(ctx context.Context, client api.Client, queryWindow time.Du
 	graph := NewGraph()
 	for _, sample := range vec {
 		labels := sample.Metric
-		client := &Node{Ip: string(labels[clientIpKey])}
-		server := &Node{Ip: string(labels[serverIpKey]), Name: string(labels[serverPodKey])}
+		client := &Node{Ip: string(labels[clientIpKey]), Name: string(labels[clientKey])}
+		server := &Node{Ip: string(labels[serverIpKey]), Name: string(labels[serverKey])}
 		graph.AddEdge(client, server)
 	}
 	return graph, nil
 }
 
-func getQuery(queryWindow time.Duration) string {
+func getQuery(queryArgs QueryArgs) string {
+	filters := addFilter(nil, "cluster", queryArgs.Cluster)
+	filters = addFilter(filters, "namespace", queryArgs.Namespace)
 	return fmt.Sprintf(
 		`sum by (
-			k8s_pod_ip, client_address, k8s_pod_name
+			server, client_address, client, server_address
 		) (
-			rate(http_servicegraph_calls_total[%s])
+			rate(traces_service_graph_request_total{%s}[%s])
 		)`,
-		queryWindow,
+		strings.Join(filters, ","),
+		queryArgs.QueryWindow,
 	)
+}
+
+func addFilter(filters []string, key, value string) []string {
+	if value == "" {
+		return filters
+	}
+	return append(filters, fmt.Sprintf(`%s="%s"`, key, value))
 }
