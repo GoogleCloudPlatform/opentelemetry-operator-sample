@@ -26,19 +26,14 @@ spec:
           grpc:
           http:
     connectors:
-      # convert spans into an http.servicegraph.calls metric
+      # convert spans into a calls metric
       spanmetrics/httpservicegraph:
         histogram:
           disable: true
         dimensions:
-          - name: http.request.method
-            default: GET
-          - name: http.response.status_code
           - name: server.address
-          - name: http.route
           - name: client.address
         exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
-        namespace: http.servicegraph
     processors:
       # filter down to only non-local http server spans
       filter/httpserveronly:
@@ -53,47 +48,49 @@ spec:
         detectors: [env, gcp]
         timeout: 2s
         override: false
-      # Move server.address from a metric attribute to a resource attribute so we can use it to get k8s attributes.
+      # Move server and client address from metric attributes to resource attributes so we can
+      # use it to get k8s.pod.name for the server and client pods
       groupbyattrs:
         keys:
           - server.address
-      # Assume server.address is a pod IP address
-      resource:
-        attributes:
-          - key: k8s.pod.ip
-            from_attribute: server.address
-            action: insert
+          - client.address
+      # Metrics are generated from server spans only, so k8s.pod.name already contains the server pod
+      transform/k8spodname_to_server:
+        metric_statements:
+          - context: resource
+            statements:
+            - set(attributes["server"], attributes["k8s.pod.name"])
+            - delete_key(attributes, "k8s.pod.name")
+            # Put the client address into k8s.pod.ip for k8sattributes processor to detect the client pod name
+            - set(attributes["k8s.pod.ip"], attributes["client.address"])
+      # Add k8s.pod.name
       k8sattributes:
         extract:
           metadata:
             - k8s.pod.name
-            - k8s.pod.uid
-            - k8s.namespace.name
         pod_association:
           - sources:
             - from: resource_attribute
               name: k8s.pod.ip
-      # Filter out metrics that aren't about pods
-      filter/podonly:
-        metrics:
-          metric:
-            - resource.attributes["k8s.pod.name"] == nil
-      # Transform metrics to match GMP http server conventions:
-      # https://cloud.google.com/stackdriver/docs/managed-prometheus/exporters/server/http
-      transform/prometheusconventions:
+      # Moves annotated k8s.pod.name to client.address
+      transform/k8spodname_to_client:
         metric_statements:
-          - context: metric
+          - context: resource
             statements:
-              - set(name, "http_request_duration") where name == "http.server.request.duration"
-              - set(name, "http_requests") where name == "http.server.request.calls"
+            - set(attributes["client"], attributes["k8s.pod.name"])
+            - delete_key(attributes, "k8s.pod.name")
+            - delete_key(attributes, "k8s.pod.ip")
+      transform/servicegraphconventions:
+        metric_statements:
           - context: datapoint
             statements:
-              - set(attributes["code"], attributes["http.response.status_code"])
-              - delete_key(attributes, "http.response.status_code")
-              - set(attributes["method"], attributes["http.request.method"])
-              - delete_key(attributes, "http.request.method")
               # GMP metrics are expected to be double
               - set(value_double, Double(value_int))
+          # Rename metric to match the servicegraphconnector's output
+          # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/connector/servicegraphconnector#how-it-works
+          - context: metric
+            statements:
+              - set(name, "traces_service_graph_request") where name == "calls"
       resource/podinstance:
         attributes:
           - key: pod
@@ -107,7 +104,8 @@ spec:
         metric:
           resource_filters:
             - regex: 'pod'
-      googlecloud:
+            - regex: client
+            - regex: server
       logging:
         loglevel: debug
     service:
@@ -118,5 +116,11 @@ spec:
           exporters: [spanmetrics/httpservicegraph]
         metrics:
           receivers: [spanmetrics/httpservicegraph]
-          processors: [groupbyattrs, resource, k8sattributes, resource/podinstance, filter/podonly, transform/prometheusconventions, resourcedetection]
-          exporters: [logging, googlemanagedprometheus]
+          processors:
+          - groupbyattrs
+          - transform/k8spodname_to_server
+          - k8sattributes
+          - transform/k8spodname_to_client
+          - transform/servicegraphconventions
+          - resourcedetection
+          exporters: [googlemanagedprometheus]

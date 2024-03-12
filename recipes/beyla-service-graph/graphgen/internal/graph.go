@@ -41,22 +41,9 @@ func NewGraph() *Graph {
 }
 
 func (g Graph) AddEdge(client, server *Node) {
-	g.upsertNode(client)
-	g.upsertNode(server)
+	g.nodes[client.Ip] = client
+	g.nodes[server.Ip] = server
 	g.adjacencies[client.Ip] = append(g.adjacencies[client.Ip], server.Ip)
-}
-
-func (g *Graph) upsertNode(node *Node) {
-	_, ok := g.nodes[node.Ip]
-	if !ok {
-		g.nodes[node.Ip] = node
-	}
-
-	// only server nodes will have pod name assigned to name, so try and upsert it if there is
-	// an existing key that was a client only
-	if g.nodes[node.Ip].Name == "" {
-		g.nodes[node.Ip].Name = node.Name
-	}
 }
 
 func (g Graph) Render(writer io.Writer) error {
@@ -110,6 +97,7 @@ func getCNode(node *Node, graph *cgraph.Graph, nodes map[*Node]*cgraph.Node) (*c
 	if err != nil {
 		return nil, err
 	}
+	cnode.SetTooltip(node.Ip)
 	if node.Name != "" {
 		cnode.SetLabel(node.Name)
 	}

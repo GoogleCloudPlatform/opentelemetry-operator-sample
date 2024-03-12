@@ -44,18 +44,17 @@ app, or the Collector endpoint needs to be updated to point to the correct servi
 
 ### Deploying the Recipe
 
-Apply the role-based access control (RBAC) configuration:
+Apply the role-based access control (RBAC) configurations:
 
 ```
-kubectl apply -f rbac.yaml
+kubectl apply -f rbac-beyla.yaml -f rbac-otel.yaml
 ```
 
-This allows the Collector's `k8sattributes` processor to read additional metadata from the
+This allows the Collector and Beyla to read additional metadata from the
 Kubernetes API to enrich the telemetry. See [`k8sattributes`
 documentation](https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/v0.90.0/processor/k8sattributesprocessor/README.md#role-based-access-control)
 for more information. If you are deploying the `OpenTelemetryCollector` object in a namespace
-other than `default`, make sure to update the `namespace` property of the ServiceAccount in
-[`rbac.yaml`](rbac.yaml#L38).
+other than `default`, make sure to update the `namespace` property of the ServiceAccounts.
 
 Apply the `OpenTelemetryCollector` object from this recipe:
 
@@ -124,13 +123,15 @@ kubectl annotate opentelemetrycollector otel \
 
 ## View your Service Graph
 
-Navigate to the Metrics explorer and look for the `http_servicegraph_calls_total` metric. This
+Navigate to the Metrics explorer and look for the `traces_service_graph_request_total` metric. This
 metric counts the number of calls between each pod. To visualize this metric, run the
 `graphgen` script which queries the metric from your project and outputs an SVG:
 
 ```sh
 cd graphgen
 go run main.go -projectId="$GCLOUD_PROJECT" > graph.svg
+# optionally filter on cluster and namespace
+go run main.go -projectId="$GCLOUD_PROJECT" -cluster=cluster-foo -namespace=default > graph.svg
 ```
 
 ![sample graphgen output](./graphgen/out.svg)
