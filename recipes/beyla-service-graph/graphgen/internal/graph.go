@@ -97,6 +97,7 @@ func getCNode(node *Node, graph *cgraph.Graph, nodes map[*Node]*cgraph.Node) (*c
 	if err != nil {
 		return nil, err
 	}
+	cnode.SetTooltip(node.Ip)
 	if node.Name != "" {
 		cnode.SetLabel(node.Name)
 	}

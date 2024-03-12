@@ -80,7 +80,7 @@ func getQuery(queryArgs QueryArgs) string {
 		`sum by (
 			server, client_address, client, server_address
 		) (
-			rate(traces_service_graph_request_total{%s}[%s])
+			rate(traces_service_graph_request_total{%s}[%s]) != 0
 		)`,
 		strings.Join(filters, ","),
 		queryArgs.QueryWindow,

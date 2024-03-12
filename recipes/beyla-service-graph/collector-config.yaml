@@ -54,32 +54,17 @@ spec:
         keys:
           - server.address
           - client.address
-      transform/serveraddress_to_k8spodip:
-        metric_statements:
-          - context: resource
-            statements:
-            - delete_key(attributes, "k8s.pod.name")
-            - set(attributes["k8s.pod.ip"], attributes["server.address"])
-      # Add k8s.pod.name
-      k8sattributes/1:
-        extract:
-          metadata:
-            - k8s.pod.name
-        pod_association:
-          - sources:
-            - from: resource_attribute
-              name: k8s.pod.ip
-      # Moves annotated k8s.pod.name to server.address and swaps client.address into k8s.pod.ip
-      # so we can detect its pod name
+      # Metrics are generated from server spans only, so k8s.pod.name already contains the server pod
       transform/k8spodname_to_server:
         metric_statements:
           - context: resource
             statements:
             - set(attributes["server"], attributes["k8s.pod.name"])
             - delete_key(attributes, "k8s.pod.name")
-            - delete_key(attributes, "k8s.pod.ip")
+            # Put the client address into k8s.pod.ip for k8sattributes processor to detect the client pod name
             - set(attributes["k8s.pod.ip"], attributes["client.address"])
-      k8sattributes/2:
+      # Add k8s.pod.name
+      k8sattributes:
         extract:
           metadata:
             - k8s.pod.name
@@ -87,6 +72,7 @@ spec:
           - sources:
             - from: resource_attribute
               name: k8s.pod.ip
+      # Moves annotated k8s.pod.name to client.address
       transform/k8spodname_to_client:
         metric_statements:
           - context: resource
@@ -120,7 +106,6 @@ spec:
             - regex: 'pod'
             - regex: client
             - regex: server
-      googlecloud:
       logging:
         loglevel: debug
     service:
@@ -129,19 +114,13 @@ spec:
           receivers: [otlp]
           processors: [filter/httpserveronly]
           exporters: [spanmetrics/httpservicegraph]
-        traces/2:
-          receivers: [otlp]
-          processors: []
-          exporters: [googlecloud]
         metrics:
           receivers: [spanmetrics/httpservicegraph]
           processors:
           - groupbyattrs
-          - transform/serveraddress_to_k8spodip
-          - k8sattributes/1
           - transform/k8spodname_to_server
-          - k8sattributes/2
+          - k8sattributes
           - transform/k8spodname_to_client
           - transform/servicegraphconventions
           - resourcedetection
-          exporters: [logging, googlemanagedprometheus]
+          exporters: [googlemanagedprometheus]
