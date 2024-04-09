@@ -43,8 +43,6 @@ spec:
               memory: 500Mi
           image: grafana/beyla:1.4.1
           securityContext:
-            # TODO(#78) without priviledged gives error "attaching socket filter: operation not permitted"
-            privileged: true
             seccompProfile:
               type: RuntimeDefault
             runAsUser: 0
@@ -53,6 +51,7 @@ spec:
               add:
                 - SYS_ADMIN
                 - SYS_PTRACE
+                - NET_RAW
               drop:
                 - ALL
           env:
