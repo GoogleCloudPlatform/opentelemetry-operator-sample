@@ -33,6 +33,29 @@ spec:
     spec:
       serviceAccountName: beyla
       hostPID: true
+      initContainers:
+        - name: mount-bpf-fs
+          image: grafana/beyla:1.5.1
+          args:
+          # Create the directory using the Pod UID, and mount the BPF filesystem.
+          - 'mkdir -p /sys/fs/bpf/$BEYLA_BPF_FS_PATH && mount -t bpf bpf /sys/fs/bpf/$BEYLA_BPF_FS_PATH'
+          command:
+          - /bin/bash
+          - -c
+          - --
+          securityContext:
+            # The init container is privileged so that it can use bidirectional mount propagation
+            privileged: true
+          volumeMounts:
+          - name: bpffs
+            mountPath: /sys/fs/bpf
+            # Make sure the mount is propagated back to the host so it can be used by the Beyla container
+            mountPropagation: Bidirectional
+          env:
+            - name: BEYLA_BPF_FS_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
       containers:
         - name: beyla
           resources:
@@ -41,7 +64,7 @@ spec:
               memory: 100Mi
             limits:
               memory: 500Mi
-          image: grafana/beyla:1.4.1
+          image: grafana/beyla:1.5.1
           securityContext:
             seccompProfile:
               type: RuntimeDefault
@@ -49,17 +72,26 @@ spec:
             readOnlyRootFilesystem: true
             capabilities:
               add:
-                - SYS_ADMIN
+                - BPF
                 - SYS_PTRACE
                 - NET_RAW
+                - CHECKPOINT_RESTORE
+                - DAC_READ_SEARCH
+                - PERFMON
               drop:
                 - ALL
           env:
             - name: BEYLA_CONFIG_PATH
               value: "/config/beyla-config.yml"
+            - name: BEYLA_BPF_FS_PATH
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
           volumeMounts:
           - name: bpffs
             mountPath: /sys/fs/bpf
+            # Use HostToContainer to propagate the mount from the init container to the Beyla container
+            mountPropagation: HostToContainer
           - name: beyla-config
             mountPath: /config
       volumes:
