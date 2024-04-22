@@ -52,10 +52,12 @@ spec:
             # Make sure the mount is propagated back to the host so it can be used by the Beyla container
             mountPropagation: Bidirectional
           env:
-            - name: BEYLA_BPF_FS_PATH
+            - name: KUBE_NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.uid
+                  fieldPath: metadata.namespace
+            - name: BEYLA_BPF_FS_PATH
+              value: beyla-$(KUBE_NAMESPACE)
       containers:
         - name: beyla
           resources:
@@ -83,10 +85,12 @@ spec:
           env:
             - name: BEYLA_CONFIG_PATH
               value: "/config/beyla-config.yml"
-            - name: BEYLA_BPF_FS_PATH
+            - name: KUBE_NAMESPACE
               valueFrom:
                 fieldRef:
-                  fieldPath: metadata.uid
+                  fieldPath: metadata.namespace
+            - name: BEYLA_BPF_FS_PATH
+              value: beyla-$(KUBE_NAMESPACE)
           volumeMounts:
           - name: bpffs
             mountPath: /sys/fs/bpf
