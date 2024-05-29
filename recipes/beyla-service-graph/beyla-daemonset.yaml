@@ -35,7 +35,7 @@ spec:
       hostPID: true
       initContainers:
         - name: mount-bpf-fs
-          image: grafana/beyla:1.5.2
+          image: grafana/beyla:1.6.2
           args:
           # Create the directory using the Pod UID, and mount the BPF filesystem.
           - 'mkdir -p /sys/fs/bpf/$BEYLA_BPF_FS_PATH && mount -t bpf bpf /sys/fs/bpf/$BEYLA_BPF_FS_PATH'
@@ -116,6 +116,8 @@ data:
       # only gather metrics from workloads running as a pod
       - k8s_pod_name: .+
       skip_go_specific_tracers: true
+    otel_metrics_export:
+      features: []
     otel_traces_export:
       endpoint: http://otel-collector:4317
       interval: 30s
