@@ -64,8 +64,6 @@ spec:
             requests:
               cpu: 10m
               memory: 100Mi
-            limits:
-              memory: 500Mi
           image: grafana/beyla:1.5.2
           securityContext:
             seccompProfile:

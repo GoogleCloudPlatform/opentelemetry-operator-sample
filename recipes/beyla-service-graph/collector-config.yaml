@@ -27,20 +27,28 @@ spec:
           http:
     connectors:
       # convert spans into a calls metric
-      spanmetrics/httpservicegraph:
+      spanmetrics/servicegraph:
         histogram:
           disable: true
         dimensions:
           - name: server.address
           - name: client.address
-        exclude_dimensions: ['status.code', 'span.kind', 'span.name', 'service.name']
+        exclude_dimensions:
+          - 'status.code'
+          - 'span.kind'
+          - 'span.name'
+          - 'service.name'
+          - 'rpc.method'
+          - 'rpc.system'
+          - 'rpc.grpc.status_code'
+          - 'server.port'
     processors:
       # filter down to only non-local http server spans
-      filter/httpserveronly:
+      filter/serveronly:
         error_mode: ignore
         traces:
           span:
-            - attributes["http.request.method"] == nil
+            - attributes["http.request.method"] == nil and attributes["rpc.method"] == nil
             - kind.string != "Server"
             - attributes["server.address"] == "127.0.0.1"
       # detect gke resource attributes
@@ -112,10 +120,10 @@ spec:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [filter/httpserveronly]
-          exporters: [spanmetrics/httpservicegraph]
+          processors: [filter/serveronly]
+          exporters: [spanmetrics/servicegraph]
         metrics:
-          receivers: [spanmetrics/httpservicegraph]
+          receivers: [spanmetrics/servicegraph]
           processors:
           - groupbyattrs
           - transform/k8spodname_to_server
