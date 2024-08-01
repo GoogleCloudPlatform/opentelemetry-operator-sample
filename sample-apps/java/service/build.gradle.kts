@@ -4,12 +4,12 @@
 
 plugins {
     id("com.google.example.java-application-conventions")
+    id("com.google.example.java-spring-application-conventions")
 }
 
 dependencies {
     implementation(project(":utilities"))
-    // TODO: maybe move spring things to conventions
-    implementation("org.springframework.boot:spring-boot-starter-web:2.4.5")
+    implementation("org.springframework.boot:spring-boot-starter-web")
 }
 
 application {
