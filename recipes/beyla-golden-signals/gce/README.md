@@ -46,6 +46,9 @@ sudo systemctl status "google-cloud-ops-agent*"
 
 #### Start Beyla process
 
+> [!WARNING]
+> This will start the Beyla process in the background as root.
+
 ```sh
 # Start beyla in the background
 sudo -E beyla &
