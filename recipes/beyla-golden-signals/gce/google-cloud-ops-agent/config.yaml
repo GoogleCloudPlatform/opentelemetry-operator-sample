@@ -30,8 +30,10 @@ metrics:
     pipelines:
       otlp:
         receivers: [otlp]
+# Add OTLP receiver to the following to export traces.
+# The service for traces must exist when using 'combined' for configuration to be valid.
 traces:
   service:
     pipelines:
       otlp:
-        receivers: [otlp]
+        receivers: []
