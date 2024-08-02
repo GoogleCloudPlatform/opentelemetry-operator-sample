@@ -30,7 +30,7 @@ BEYLA_V1_7_RELEASE=https://github.com/grafana/beyla/releases/download/v1.7.0/bey
 curl -Lo beyla.tar.gz $BEYLA_V1_7_RELEASE
 mkdir -p beyla-installation/
 tar -xzf beyla.tar.gz -C beyla-installation/
-# Move beyla eecutable to /usr/local/bin
+# Move beyla executable to /usr/local/bin
 # /usr/local/bin is the path on a default GCE instance running Debian
 sudo cp beyla-installation/beyla /usr/local/bin
 

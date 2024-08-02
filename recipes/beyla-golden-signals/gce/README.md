@@ -17,7 +17,7 @@ Beyla allows [two modes of exporting data](https://grafana.com/docs/beyla/latest
   [IAM permissions](https://cloud.google.com/trace/docs/iam#roles) for your cluster's service
   account (or Workload Identity setup as shown below).
 * A GCE instance running Debian Linux and [Google Cloud Ops Agent](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent) installed.
-    * For variosu installation methods see the [installation instructions](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/install-index).
+    * For various installation methods see the [installation instructions](https://cloud.google.com/stackdriver/docs/solutions/agents/ops-agent/install-index).
     * If you're creating the GCE instance from Google Cloud Console, you can simply check the `Install Ops Agent for Monitoring and Logging` checkbox during VM creation.
 * Ability to SSH into the created GCE instance.
 * The files in this recipe, locally on the created VM.
@@ -72,7 +72,7 @@ export SERVICE_NAME=http://localhost:8080
 java -jar ../../../sample-apps/java/app/build/libs/app-standalone.jar
 ```
 
-Issue multiple requests to generate a good amount of metrics
+Or, issue multiple requests to generate a good amount of metric data
 
 ```sh
 export SERVICE_NAME=http://localhost:8080
