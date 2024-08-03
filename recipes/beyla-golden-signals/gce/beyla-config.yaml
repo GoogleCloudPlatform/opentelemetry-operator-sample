@@ -22,9 +22,9 @@ protocol: grpc
 otel_metrics_export:
   endpoint: http://0.0.0.0:4317
   # default includes all possible instrumentations "*"
-  instrumentations: ["http","grpc"]
+  instrumentations: ["http", "grpc"]
   # default only includes "application"
-  features: ["application","application_process"]
+  features: ["application", "application_process"]
 
 otel_traces_export:
   endpoint: http://0.0.0.0:4317
@@ -39,7 +39,7 @@ discovery:
       name: "my-java-service"
       namespace: beyla-gce-java-apps
     # This configuration is not relevant to this sample
-    # since we are only runninfg a java application
+    # since we are only running a java application
     - exe_path: node
       name: "my-node-service"
       namespace: beyla-gce-node-apps
