@@ -32,9 +32,8 @@ From the location of this recipe *(beyla-golden-sigals/gce)*, execute the follow
 #### Install and configure Beyla on the VM:
 
 ```sh
-# Make sure to run this without a dot slash (./) since it needs to source variables.
-# Running using ./ will run the script it in a subshell. 
-. configure-beyla.sh
+# Install beyla on VM and configure Ops Agent
+./install-beyla.sh
 ```
 
 #### Check if Google Cloud Ops Agent is still running (Optional):
@@ -51,7 +50,7 @@ sudo systemctl status "google-cloud-ops-agent*"
 
 ```sh
 # Start beyla in the background
-sudo -E beyla &
+sudo beyla --config=beyla-config.yaml &
 ```
 
 ## Build & run the sample Java server app
@@ -62,7 +61,7 @@ sudo -E beyla &
 > If for whatever reason you need to kill the currently running server app, run the following command `fuser -k 8080/tcp`.
 
 ```sh
-# This will start the built server application in the background, listening on port 8080.
+# This will start the built server application in the background, listening on port 8080
 ./run-sample-app.sh
 ```
 
