@@ -12,22 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Beyla can be configured to listen to applications running on multiple ports.
 # Beyla can also be configured globally using environment variables.
 # Environment variables have priority over the properties in the config file.
-open_port: 8080,8082,8083
+# Beyla can be configured to listen to applications running on multiple ports.
+# This configures Beyla to execute all the processes owning one of the ports in
+# the specified range.
+# Limit the range of ports/specify ports if you want Beyla to execute only specific
+# applications. Having a large range might increase resource consumption by Beyla.
+open_port: 1-65536
 trace_printer: text
 protocol: grpc
 
 otel_metrics_export:
   endpoint: http://0.0.0.0:4317
   # default includes all possible instrumentations "*"
-  instrumentations: ["http", "grpc"]
+  instrumentations: ["*"]
   # default only includes "application"
   features: ["application", "application_process"]
 
 otel_traces_export:
-  endpoint: http://0.0.0.0:4317
+  # Uncomment the below line to enable trace generation by Beyla
+  # endpoint: http://0.0.0.0:4317
 
 # This section describes how you can discover various services
 # running on your system and assign them different names and
@@ -39,7 +44,7 @@ discovery:
       name: "my-java-service"
       namespace: beyla-gce-java-apps
     # This configuration is not relevant to this sample
-    # since we are only running a java application
+    # since we are only running a java application.
     - exe_path: node
       name: "my-node-service"
       namespace: beyla-gce-node-apps
