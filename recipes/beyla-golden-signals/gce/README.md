@@ -50,7 +50,7 @@ sudo systemctl status "google-cloud-ops-agent*"
 
 ```sh
 # Start beyla in the background
-sudo beyla --config=beyla-config.yaml &
+sudo beyla --config=beyla-config.yaml 2>&1 > logs_beyla.txt &
 ```
 
 ## Build & run the sample Java server app

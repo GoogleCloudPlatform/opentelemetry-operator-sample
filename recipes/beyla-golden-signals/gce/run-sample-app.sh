@@ -25,4 +25,4 @@ pushd $SAMPLE_APP_JAVA_DIR
 popd
 
 # Run the server application
-java -jar $SAMPLE_APP_JAVA_DIR/service/build/libs/$SERVICE_JAR_FILE &
+java -jar $SAMPLE_APP_JAVA_DIR/service/build/libs/$SERVICE_JAR_FILE 2>&1 > logs_service.txt &
