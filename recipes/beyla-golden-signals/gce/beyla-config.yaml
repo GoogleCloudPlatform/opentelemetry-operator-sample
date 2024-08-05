@@ -1,0 +1,46 @@
+# Copyright 2024 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Beyla can also be configured globally using environment variables.
+# Environment variables have priority over the properties in the config file.
+# Beyla can be configured to listen to applications running on multiple ports.
+# This configures Beyla to execute all the processes owning one of the ports in
+# the specified range.
+# Limit the range of ports/specify ports if you want Beyla to execute only specific
+# applications. Having a large range might increase resource consumption by Beyla.
+open_port: 1-65536
+trace_printer: text
+protocol: grpc
+
+otel_metrics_export:
+  endpoint: http://0.0.0.0:4317
+
+otel_traces_export:
+  # Uncomment the below line to enable trace generation by Beyla
+  # endpoint: http://0.0.0.0:4317
+
+# This section describes how you can discover various services
+# running on your system and assign them different names and
+# namespaces based on the exe_path.
+# This feature is not available when configuring through environment variables.
+discovery:
+  services:
+    - exe_path: java
+      name: "my-java-service"
+      namespace: beyla-gce-java-apps
+    # This configuration is not relevant to this sample
+    # since we are only running a java application.
+    - exe_path: node
+      name: "my-node-service"
+      namespace: beyla-gce-node-apps
