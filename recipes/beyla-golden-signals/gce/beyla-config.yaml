@@ -25,10 +25,6 @@ protocol: grpc
 
 otel_metrics_export:
   endpoint: http://0.0.0.0:4317
-  # default includes all possible instrumentations "*"
-  instrumentations: ["*"]
-  # default only includes "application"
-  features: ["application", "application_process"]
 
 otel_traces_export:
   # Uncomment the below line to enable trace generation by Beyla
