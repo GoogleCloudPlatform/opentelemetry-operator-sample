@@ -17,7 +17,7 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  image: otel/opentelemetry-collector-contrib:0.90.0
+  image: otel/opentelemetry-collector-contrib:0.112.0
   # We need to specify ports so remote sampler is exposed.
   ports:
     - port: 4317
@@ -43,7 +43,9 @@ spec:
       otlp:
         protocols:
           grpc:
+            endpoint: 0.0.0.0:4317
           http:
+            endpoint: 0.0.0.0:4318
     exporters:
       debug:
     extensions:
