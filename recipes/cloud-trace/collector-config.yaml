@@ -17,23 +17,25 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  image: otel/opentelemetry-collector-contrib:0.90.0
+  image: otel/opentelemetry-collector-contrib:0.112.0
   config: |
     receivers:
       otlp:
         protocols:
           grpc:
+            endpoint: 0.0.0.0:4317
           http:
+            endpoint: 0.0.0.0:4318
     processors:
 
     exporters:
       googlecloud:
-      logging:
-        loglevel: debug
+      debug:
+        verbosity: detailed
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
           processors: []
-          exporters: [logging, googlecloud]
+          exporters: [debug, googlecloud]
