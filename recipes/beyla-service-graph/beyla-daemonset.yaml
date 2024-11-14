@@ -126,7 +126,9 @@ data:
         dns: false
       kubernetes:
         enable: true
+        # drop_external only collects spans for kubernetes entities (e.g. pods), which reduces resource usage.
         drop_external: true
+        # disable_informers prevents Beyla from watching k8s resources, and reduces the load on the kubernetes API Server.
         disable_informers: [replicaset, service, node]
     routes:
       unmatched: wildcard
