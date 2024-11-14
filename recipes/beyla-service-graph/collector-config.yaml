@@ -17,14 +17,16 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  image: otel/opentelemetry-collector-contrib:0.90.0
+  image: otel/opentelemetry-collector-contrib:0.112.0
   config: |
     receivers:
       # receive OTLP spans from Beyla
       otlp:
         protocols:
           grpc:
+            endpoint: 0.0.0.0:4317
           http:
+            endpoint: 0.0.0.0:4318
     connectors:
       # convert spans into a calls metric
       spanmetrics/servicegraph:
@@ -98,7 +100,7 @@ spec:
           # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/connector/servicegraphconnector#how-it-works
           - context: metric
             statements:
-              - set(name, "traces_service_graph_request") where name == "calls"
+              - set(name, "traces_service_graph_request") where name == "traces.span.metrics.calls"
       resource/podinstance:
         attributes:
           - key: pod
@@ -114,8 +116,6 @@ spec:
             - regex: 'pod'
             - regex: client
             - regex: server
-      logging:
-        loglevel: debug
     service:
       pipelines:
         traces:

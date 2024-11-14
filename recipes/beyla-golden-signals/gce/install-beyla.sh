@@ -26,7 +26,7 @@ sudo apt install -y openjdk-17-jdk
 
 # Download Beyla
 echo "Downloading Beyla..."
-BEYLA_V1_7_RELEASE=https://github.com/grafana/beyla/releases/download/v1.7.0/beyla-linux-amd64-v1.7.0.tar.gz
+BEYLA_V1_7_RELEASE=https://github.com/grafana/beyla/releases/download/v1.8.6/beyla-linux-amd64-v1.8.6.tar.gz
 curl -Lo beyla.tar.gz $BEYLA_V1_7_RELEASE
 mkdir -p beyla-installation/
 tar -xzf beyla.tar.gz -C beyla-installation/

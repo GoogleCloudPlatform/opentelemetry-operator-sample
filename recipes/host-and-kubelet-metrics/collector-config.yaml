@@ -17,7 +17,7 @@ kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
-  image: otel/opentelemetry-collector-contrib:0.98.0
+  image: otel/opentelemetry-collector-contrib:0.112.0
   mode: daemonset
   env:
     - name: K8S_NODE_NAME
@@ -105,7 +105,7 @@ spec:
           extra_metrics_config:
             enable_target_info: false
           resource_filters:
-            regex: "k8s.*"
+          - regex: "k8s.*"
 
     service:
       pipelines:
