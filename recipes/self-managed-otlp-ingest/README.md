@@ -37,7 +37,7 @@ Deploy an un-instrumented application on your GKE cluster. The application used 
 
 To build the sample app, from the root of this recipe:
 ```shell
-pushd uninstrumented-app/quickstart-java/examples/instrumentation-quickstart && \
+pushd uninstrumented-app/examples/instrumentation-quickstart && \
 DOCKER_BUILDKIT=1  docker build -f uninstrumented.Dockerfile -t java-quickstart . && \
 popd
 ```
@@ -62,7 +62,7 @@ Finally, deploy the pushed application in your cluster:
 envsubst < k8s/quickstart-app.yaml | kubectl apply -f -
 ```
 
-Once your application is deployed, you can interact with it by hitting either `/single` or `/multi` endpoints on port `8080`. For more information about the application, view the [application readme](uninstrumented-app/quickstart-java/examples/instrumentation-quickstart/README.md).\
+Once your application is deployed, you can interact with it by hitting either `/single` or `/multi` endpoints on port `8080`. For more information about the application, view the [application readme](uninstrumented-app/examples/instrumentation-quickstart/README.md).\
 *Note: You may need to configure port forwarding to interact with this application over localhost.*
 
 ## Instrumenting deployed applications
