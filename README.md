@@ -62,10 +62,10 @@ listed above.
 
 ### Installing the OpenTelemetry Operator
 
-Install the the Operator with:
+Install the Operator with:
 
 ```
-kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/download/v0.112.0/opentelemetry-operator.yaml
+kubectl apply -f https://github.com/open-telemetry/opentelemetry-operator/releases/download/v0.116.0/opentelemetry-operator.yaml
 ```
 
 ### Starting the Collector
@@ -110,7 +110,7 @@ Each of these sample apps works well with the [recipes](recipes) listed below.
 ## Recipes
 
 The [`recipes`](recipes/) directory holds different sample use cases for working with the
-operator and auto-instrumentation along with setup guides for each recipe. Currently there are:
+operator and auto-instrumentation along with setup guides for each recipe. Currently, there are:
 
 * [Trace sampling configuration](recipes/trace-sampling)
 * [Trace remote sampling config](recipes/trace-remote-sampling)
