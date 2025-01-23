@@ -7,7 +7,7 @@ The example demonstrates a scenario where a user has an application deployed on 
 ## Setting up the cluster with an application
 
 > [!TIP]
-> This section outlines the steps to create a cluster & deploy a sample application. Feel free to skip this section and move to [Instrumenting deployed applications](#instrumenting-deployed-applications) if you already have a sample app and cluster setup.
+> This section outlines the steps to create a cluster & deploy a sample application. Feel free to skip this section and move to [Instrumenting deployed applications](#instrumenting-deployed-applications) if you already have a sample app and cluster setup. \
 > Alternatively, you can run a convenience script that executes the steps in this section to give you a cluster with a running application. You can execute this script from the root of this recipe: `./setup-application.sh`. 
 
 ### Creating a GKE cluster
@@ -16,7 +16,6 @@ Run the following commands to create a GKE autopilot cluster. Alternatively, you
 
 ```shell
 # Setup required environment variables, modify based on your preference
-
 export PROJECT_ID="<your-project-id>"
 export CLUSTER_NAME="opentelemetry-autoinstrument-cluster"
 export CLUSTER_REGION="us-central1"
@@ -38,9 +37,12 @@ Deploy an un-instrumented application on your GKE cluster. The application used 
 
 To build the sample app, from the root of this recipe:
 ```shell
-pushd uninstrumented-app/examples/instrumentation-quickstart && \
+# We pull the application from GitHub and build it 
+git clone https://github.com/GoogleCloudPlatform/opentelemetry-operations-java.git
+pushd opentelemetry-operations-java/examples/instrumentation-quickstart && \
 DOCKER_BUILDKIT=1  docker build -f uninstrumented.Dockerfile -t java-quickstart . && \
-popd
+popd && \
+rm -rf opentelemetry-operations-java
 ```
 
 Next, push the locally built image to Google Artifact Registry:

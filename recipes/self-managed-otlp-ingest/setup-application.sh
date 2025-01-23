@@ -28,10 +28,13 @@ echo "CREATING CLUSTER WITH NAME ${CLUSTER_NAME} in ${CLUSTER_REGION}"
 gcloud beta container --project "${PROJECT_ID}" clusters create-auto "${CLUSTER_NAME}" --region "${CLUSTER_REGION}" --release-channel "regular" --tier "standard" --enable-ip-access --no-enable-google-cloud-access --network "projects/${PROJECT_ID}/global/networks/default" --subnetwork "projects/${PROJECT_ID}/regions/${CLUSTER_REGION}/subnetworks/default" --cluster-ipv4-cidr "/17" --binauthz-evaluation-mode=DISABLED
 echo "CLUSTER CREATED SUCCESSFULLY"
 
+echo "PULLING SAMPLE APPLICATION REPOSITORY"
 echo "BUILDING SAMPLE APPLICATION IMAGE"
-pushd uninstrumented-app/examples/instrumentation-quickstart && \
+git clone https://github.com/GoogleCloudPlatform/opentelemetry-operations-java.git
+pushd opentelemetry-operations-java/examples/instrumentation-quickstart && \
 DOCKER_BUILDKIT=1  docker build -f uninstrumented.Dockerfile -t java-quickstart . && \
-popd
+popd && \
+rm -rf opentelemetry-operations-java
 echo "APPLICATION IMAGE BUILT"
 
 echo "CREATING CLOUD ARTIFACT REPOSITORY"
