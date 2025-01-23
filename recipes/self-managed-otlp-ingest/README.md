@@ -4,10 +4,11 @@ This recipe shows how to use self-managed OTLP ingest to export telemetry from a
 
 The example demonstrates a scenario where a user has an application deployed on a GKE cluster and now needs to instrument it and export the generated telemetry to Google Cloud.
 
-## Setting up the scenario
+## Setting up the cluster with an application
 
 > [!TIP]
 > This section outlines the steps to create a cluster & deploy a sample application. Feel free to skip this section and move to [Instrumenting deployed applications](#instrumenting-deployed-applications) if you already have a sample app and cluster setup.
+> Alternatively, you can run a convenience script that executes the steps in this section to give you a cluster with a running application. You can execute this script from the root of this recipe: `./setup-application.sh`. 
 
 ### Creating a GKE cluster
 
@@ -141,9 +142,7 @@ The instrumentation used in the sample is currently configured to generate only 
 
 You can delete the cluster and the artifact registry created using this sample to avoid unnecessary charges:
 ```shell
-# Delete the artifact registry
+# Delete the artifact registry & the created cluster
 gcloud artifacts repositories delete ${CONTAINER_REGISTRY} --location=${REGISTRY_LOCATION}
-
-# Delete the cluster
 gcloud container clusters delete ${CLUSTER_NAME} --location=${CLUSTER_REGION}
 ```
