@@ -58,16 +58,21 @@ gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=d
 # Tag and push the built application image to Google Artifact Registry
 docker tag java-quickstart:latest ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/java-quickstart:latest
 docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/java-quickstart:latest
+
+# Additionally, we build a docker image that can simulate traffic on the deployed application by sending requests to our application
+pushd traffic && \
+DOCKER_BUILDKIT=1  docker build -f hey.Dockerfile -t ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/hey:latest . && \
+docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/hey:latest && \
+popd
 ```
 
-Finally, deploy the pushed application in your cluster:
+Finally, deploy the pushed application & traffic generator in your cluster:
 ```shell
 # This relies on the environment variables exported in previous steps
-envsubst < k8s/quickstart-app.yaml | kubectl apply -f -
+kubectl kustomize k8s | envsubst | kubectl apply -f -
 ```
 
-Once your application is deployed, you can interact with it by hitting either `/single` or `/multi` endpoints on port `8080`. For more information about the application, view the [application readme](uninstrumented-app/examples/instrumentation-quickstart/README.md).\
-*Note: You may need to configure port forwarding to interact with this application over localhost.*
+The traffic generator simulates traffic on the deployed endpoint by hitting the `/multi` endpoint at 1 QPS.  For more information about the application, view the [application readme](uninstrumented-app/examples/instrumentation-quickstart/README.md).\
 
 ## Deploy a self-managed OpenTelemetry Collector on the cluster
 

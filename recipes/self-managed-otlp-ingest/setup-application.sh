@@ -37,15 +37,22 @@ popd && \
 rm -rf opentelemetry-operations-java
 echo "APPLICATION IMAGE BUILT"
 
-echo "CREATING CLOUD ARTIFACT REPOSITORY"
+echo "CREATING CLOUD ARTIFACT REGISTRY"
 gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="Sample applications to auto-instrument using OTel operator"
 echo "CREATED ${CONTAINER_REGISTRY} in ${REGISTRY_LOCATION}"
 
-echo "PUSHING THE SAMPLE APPLICATION IMAGE TO THE REPOSITORY"
+echo "PUSHING THE SAMPLE APPLICATION IMAGE TO THE REGISTRY"
 docker tag java-quickstart:latest ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/java-quickstart:latest
 docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/java-quickstart:latest
-echo "APPLICATION IMAGE PUSHED TO ARTIFACT REPOSITORY"
+echo "APPLICATION IMAGE PUSHED TO ARTIFACT REGISTRY"
 
-echo "DEPLOYING SAMPLE APPLICATION ON ${CLUSTER_NAME}"
-envsubst < k8s/quickstart-app.yaml | kubectl apply -f -
+echo "BUILDING TRAFFIC SIMULATOR IMAGE"
+pushd traffic && \
+DOCKER_BUILDKIT=1  docker build -f hey.Dockerfile -t ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/hey:latest . && \
+docker push ${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${CONTAINER_REGISTRY}/hey:latest && \
+popd
+echo "TRAFFIC SIMULATOR IMAGE BUILT & PUSHED TO ARTIFACT REGISTRY"
+
+echo "DEPLOYING APPLICATION ON ${CLUSTER_NAME}"
+kubectl kustomize k8s | envsubst | kubectl apply -f -
 echo "SAMPLE APPLICATION DEPLOYED"
