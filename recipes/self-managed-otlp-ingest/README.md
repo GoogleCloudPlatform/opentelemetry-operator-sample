@@ -1,8 +1,12 @@
 # Using Self Managed OTLP ingest with OpenTelemetry Operator
 
-This recipe shows how to use self-managed OTLP ingest to export telemetry from an auto-instrumented application deployed on a GKE cluster.
-
+This recipe shows how to use self-managed OTLP ingest to export telemetry from an auto-instrumented application deployed on a GKE cluster. \
 The example demonstrates a scenario where a user has an application deployed on a GKE cluster and now needs to instrument it and export the generated telemetry to Google Cloud.
+
+There are three broad steps that give the overview for this recipe:
+1. [Running a GKE cluster with a deployed Java application](#setting-up-the-cluster-with-an-application)
+2. [Deploying a self-managed OpenTelemetry Collector](#deploy-a-self-managed-opentelemetry-collector-on-the-cluster)
+3. [Auto-instrumenting the deployed Java application](#instrumenting-deployed-applications)
 
 ## Setting up the cluster with an application
 
@@ -162,7 +166,14 @@ kubectl patch deployment.apps/quickstart-app -n default -p '{"spec":{"template":
 ## Viewing the result
 
 After injecting the application, the application should start producing telemetry which can be viewed in Google Cloud.\
-The instrumentation used in the sample is currently configured to generate only traces and the traces can be viewed on the GCP UI using the Trace Explorer.
+The instrumentation used in the sample is currently configured to generate traces and the traces and metrics.
+ - The traces can be viewed visiting the [trace explorer page](https://cloud.google.com/trace/docs/finding-traces#about) in your project.
+ - The metrics can be viewed visiting the [metrics explorer page](https://console.cloud.google.com/monitoring/metrics-explorer) in your project.
+
+The metrics are exported using [Google managed service for Prometheus](https://cloud.google.com/stackdriver/docs/managed-prometheus) and will have `prometheus.googleapis.com` as their metric prefix.
+
+If the expected metrics are not visible, please check the collector logs for any potential errors.
+Troubleshooting information for known error types is available [here](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/googlemanagedprometheusexporter#troubleshooting).
 
 ## Cleanup
 
