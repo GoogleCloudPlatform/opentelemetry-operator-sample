@@ -18,10 +18,8 @@ metadata:
   namespace: default
   name: sample-java-auto-instrumentation
 spec:
-  propagators:
-    - tracecontext
-    - baggage
-    - b3
+  exporter:
+    endpoint: http://opentelemetry-collector.opentelemetry.svc.cluster.local:4317
   sampler:
     type: parentbased_traceidratio
     argument: "0.01"
@@ -32,7 +30,3 @@ spec:
         value: grpc
       - name: OTEL_LOGS_EXPORTER
         value: none
-      - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
-        value: http://opentelemetry-collector.opentelemetry.svc.cluster.local:4317
-      - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-        value: http://opentelemetry-collector.opentelemetry.svc.cluster.local:4317

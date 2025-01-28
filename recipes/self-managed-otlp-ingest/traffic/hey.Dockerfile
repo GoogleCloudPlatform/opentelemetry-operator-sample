@@ -15,6 +15,8 @@
 FROM golang:1.21-alpine3.19 AS build
 
 RUN apk add --no-cache wget
+# The link for the binary is specified in library's README
+# https://github.com/rakyll/hey/blob/master/README.md
 RUN wget -O /hey https://hey-release.s3.us-east-2.amazonaws.com/hey_linux_amd64
 RUN chmod +x /hey
 
