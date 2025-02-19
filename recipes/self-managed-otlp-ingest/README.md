@@ -76,7 +76,7 @@ Finally, deploy the pushed application & traffic generator in your cluster:
 kubectl kustomize k8s | envsubst | kubectl apply -f -
 ```
 
-The traffic generator simulates traffic on the deployed endpoint by hitting the `/multi` endpoint at 1 QPS.  For more information about the application, view the [application readme](uninstrumented-app/examples/instrumentation-quickstart/README.md).\
+The traffic generator simulates traffic on the deployed endpoint by hitting the `/multi` endpoint at 1 QPS.  For more information about the application, view the [application readme](https://github.com/GoogleCloudPlatform/opentelemetry-operations-java/blob/main/examples/instrumentation-quickstart/README.md).
 
 ## Deploy a self-managed OpenTelemetry Collector on the cluster
 
