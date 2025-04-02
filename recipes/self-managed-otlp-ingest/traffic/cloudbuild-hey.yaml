@@ -16,7 +16,7 @@
 # configuration also pushes the built application image to Google Artifact
 # Registry. The 'hey' utility issues a steady stram of requests to a configured
 # endpoint.
-# REGISTRY_LOCATION, PROJECT_ID, ARTIFACT_REGISTRY environment variables must be
+# REGISTRY_LOCATION, GOOGLE_CLOUD_PROJECT, ARTIFACT_REGISTRY environment variables must be
 # substituted in this file.
 #
 # Using gCloud CLI:
@@ -25,7 +25,7 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   env:
   - 'DOCKER_BUILDKIT=1'
-  args: ['build', '-t', '${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY}/hey:latest', '-f', 'hey.Dockerfile', '.']
+  args: ['build', '-t', '${REGISTRY_LOCATION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${ARTIFACT_REGISTRY}/hey:latest', '-f', 'hey.Dockerfile', '.']
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', '${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY}/hey:latest']
-images: ['${REGISTRY_LOCATION}-docker.pkg.dev/${PROJECT_ID}/${ARTIFACT_REGISTRY}/hey:latest']
+  args: ['push', '${REGISTRY_LOCATION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${ARTIFACT_REGISTRY}/hey:latest']
+images: ['${REGISTRY_LOCATION}-docker.pkg.dev/${GOOGLE_CLOUD_PROJECT}/${ARTIFACT_REGISTRY}/hey:latest']
