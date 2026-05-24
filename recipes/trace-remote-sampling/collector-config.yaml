@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
@@ -38,7 +38,7 @@ spec:
     mountPath: /etc/otel/sampling
     readOnly: true
   # Ensure the jaeger remote sampler config is enabled as an extension.
-  config: |
+  config:
     receivers:
       otlp:
         protocols:

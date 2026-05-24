@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: opentelemetry.io/v1alpha1
+apiVersion: opentelemetry.io/v1beta1
 kind: OpenTelemetryCollector
 metadata:
   name: otel
 spec:
   image: otel/opentelemetry-collector-contrib:0.112.0
-  config: |
+  config:
     receivers:
       # receive OTLP spans from Beyla
       otlp:
