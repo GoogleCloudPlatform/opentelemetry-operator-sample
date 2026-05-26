@@ -20,6 +20,10 @@ GCLOUD_PROJECT ?= $(shell gcloud config get project)
 setup:
 	gcloud artifacts repositories create ${CONTAINER_REGISTRY} --repository-format=docker --location=${REGISTRY_LOCATION} --description="OpenTelemetry Operator sample registry"
 
+.PHONY: docker-auth
+docker-auth:
+	gcloud auth configure-docker ${REGISTRY_LOCATION}-docker.pkg.dev
+
 .PHONY: sample-replace
 sample-replace:
 	sed -i "s/%GCLOUD_PROJECT%/${GCLOUD_PROJECT}/g" k8s/app.yaml
