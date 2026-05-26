@@ -18,7 +18,7 @@ metadata:
   name: my-instrumentation
 spec:
   exporter:
-    endpoint: http://otel-collector:4317
+    endpoint: http://otel-collector.default:4317
   propagators:
     - tracecontext
     - baggage
@@ -36,4 +36,4 @@ spec:
     # Python autoinstrumentation only supports OTLP/HTTP which the collector runs on port 4318,
     # see https://github.com/open-telemetry/opentelemetry-operator/issues/924
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
-      value: http://otel-collector:4318
+      value: http://otel-collector.default:4318
