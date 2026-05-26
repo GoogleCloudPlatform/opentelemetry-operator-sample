@@ -12,6 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: otel-deployment-buffered-telemetry
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
 apiVersion: opentelemetry.io/v1alpha1
 kind: OpenTelemetryCollector
 metadata:
@@ -22,15 +33,15 @@ spec:
     requests:
       cpu: 50m
       memory: 100Mi
-      ephemeral-storage: 1Gi
     limits:
       memory: 140Mi
   volumeMounts:
   - mountPath: /var/lib/buffered-telemetry
     name: buffered-telemetry
   volumes:
-  - emptyDir: {}
-    name: buffered-telemetry
+  - name: buffered-telemetry
+    persistentVolumeClaim:
+      claimName: otel-deployment-buffered-telemetry
   config: |
     receivers:
       otlp:

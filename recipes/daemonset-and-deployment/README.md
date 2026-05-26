@@ -9,11 +9,13 @@ collector on each Kubernetes Node, and is configured with the `memory_limiter`
 processor to ensure it doesn't run into its memory limits and get OOM Killed.
 
 The deployment is configured with a persistent queue to enable it to buffer
-telemetry during a network outage. To do this, it includes an `emptyDir` volume
-and requests `1Gi` of `ephemeral-storage` space to ensure it has guaranteed access
-to disk space for buffering. It configures the `file_storage` extension to make
-that disk space available to exporters in the collector, and configures the `googlecloud`
-exporter's `sending_queue` to use that storage for storing items in the queue.
+telemetry during a network outage. To do this, it includes a
+`PersistentVolumeClaim` and mounts it into the Collector for buffering. It
+configures the `file_storage` extension to make that disk space available to
+exporters in the collector, and configures the `googlecloud` exporter's
+`sending_queue` to use that storage for storing items in the queue. The
+persistent volume keeps queued telemetry across deployment rollouts and pod
+restarts.
 
 If overwriting an existing `OpenTelemetryCollector` object (i.e., you already have a running
 Collector through the Operator such as the one from the
@@ -69,6 +71,9 @@ kubectl apply -f deployment-collector-config.yaml
 ```
 
 (This will overwrite any existing collector config, or create a new one if none exists.)
+The deployment collector config also creates a `1Gi` PersistentVolumeClaim that
+uses your cluster's default StorageClass. If your cluster does not have a
+default StorageClass, update the claim before applying it.
 
 Once the Collector restarts, you should see traces from your application
 
