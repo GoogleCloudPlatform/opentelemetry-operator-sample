@@ -22,6 +22,13 @@ export CONTAINER_REGISTRY=otel-operator
 make setup
 ```
 
+Then configure Docker to authenticate to Artifact Registry before pushing sample
+images:
+
+```
+make docker-auth
+```
+
 The build and deploy commands for each app use the environment variables from above to run
 the container image from your registry, along with `GCLOUD_PROJECT`.
 
