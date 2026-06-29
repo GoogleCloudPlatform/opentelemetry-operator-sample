@@ -118,6 +118,7 @@ operator and auto-instrumentation along with setup guides for each recipe. Curre
 * [Trace enhancements](recipes/trace-enhancements)
 * [Cloud Trace integration](recipes/cloud-trace)
 * [Resource detection](recipes/resource-detection)
+* [Kubernetes cluster metrics](recipes/k8s-cluster-receiver)
 * [Daemonset and Deployment](recipes/daemonset-and-deployment)
 * [eBPF HTTP Golden Signals with Beyla](recipes/beyla-golden-signals)
 * [eBPF HTTP Service Graph with Beyla](recipes/beyla-service-graph)
