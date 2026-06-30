@@ -12,9 +12,10 @@ microservice applications. It combines the [NodeJS sample app](../nodejs) with t
 * An `OpenTelemetryCollector` object already created in the current namespace,
   such as [the sample `collector-config.yaml`](../../README.md#starting-the-Collector)
   from the main [README](../../README.md)
-* An `Instrumentation` object already created in the current namespace,
-  such as [the sample `instrumentation.yaml`](../../README.md#auto-instrumenting-applications)
-  from the main [README](../../README.md)
+* An `Instrumentation` object already created, such as
+  [the sample `instrumentation.yaml`](../../README.md#auto-instrumenting-applications)
+  from the main [README](../../README.md). The examples below reference
+  `default/my-instrumentation`; change the namespace if you created it elsewhere.
 
 ## Running
 
@@ -45,8 +46,8 @@ microservice applications. It combines the [NodeJS sample app](../nodejs) with t
 
 5. Run the following commands to patch the app CronJob and service Deployment for auto-instrumentation:
    ```
-   kubectl patch deployment.apps/nodeshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "true"}}}}}'
-   kubectl patch deployment.apps/javashowcase-service -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java": "true"}}}}}'
+   kubectl patch deployment.apps/nodeshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-nodejs": "default/my-instrumentation"}}}}}'
+   kubectl patch deployment.apps/javashowcase-service -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-java": "default/my-instrumentation"}}}}}'
    ```
    These commands will use the `Instrumentation` created as part of the Prerequisites.
 

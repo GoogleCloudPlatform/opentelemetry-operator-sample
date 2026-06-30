@@ -11,9 +11,10 @@ server listens for requests which the client makes on a timed loop.
 * An `OpenTelemetryCollector` object already created in the current namespace,
   such as [the sample `collector-config.yaml`](../../README.md#starting-the-Collector)
   from the main [README](../../README.md)
-* An `Instrumentation` object already created in the current namespace,
-  such as [the sample `instrumentation.yaml`](../../README.md#auto-instrumenting-applications)
-  from the main [README](../../README.md)
+* An `Instrumentation` object already created, such as
+  [the sample `instrumentation.yaml`](../../README.md#auto-instrumenting-applications)
+  from the main [README](../../README.md). The examples below reference
+  `default/my-instrumentation`; change the namespace if you created it elsewhere.
 
 ## Running
 
@@ -39,8 +40,8 @@ server listens for requests which the client makes on a timed loop.
 
 4. Run the following commands to patch the `app` and `server` deployments for auto-instrumentation:
    ```
-   kubectl patch deployment.apps/goshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-go": "true", "instrumentation.opentelemetry.io/otel-go-auto-target-exe": "/app/main"}}}}}'
-   kubectl patch deployment.apps/goshowcase-server -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-go": "true", "instrumentation.opentelemetry.io/otel-go-auto-target-exe": "/server/main"}}}}}'
+   kubectl patch deployment.apps/goshowcase-app -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-go": "default/my-instrumentation", "instrumentation.opentelemetry.io/otel-go-auto-target-exe": "/app/main"}}}}}'
+   kubectl patch deployment.apps/goshowcase-server -p '{"spec":{"template":{"metadata":{"annotations":{"instrumentation.opentelemetry.io/inject-go": "default/my-instrumentation", "instrumentation.opentelemetry.io/otel-go-auto-target-exe": "/server/main"}}}}}'
    ```
    These commands will use the `Instrumentation` created as part of the Prerequisites.
 
