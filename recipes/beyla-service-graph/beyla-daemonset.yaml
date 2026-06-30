@@ -26,10 +26,6 @@ spec:
     metadata:
       labels:
         app: beyla
-      annotations:
-        # allow beyla to write to /sys/fs/bpf by setting the
-        # apparmor policy to unconfined.
-        container.apparmor.security.beta.kubernetes.io/beyla: "unconfined"
     spec:
       serviceAccountName: beyla
       hostPID: true
@@ -66,6 +62,9 @@ spec:
               memory: 100Mi
           image: grafana/beyla:1.8.6
           securityContext:
+            # Allow Beyla to write to /sys/fs/bpf.
+            appArmorProfile:
+              type: Unconfined
             seccompProfile:
               type: RuntimeDefault
             runAsUser: 0
