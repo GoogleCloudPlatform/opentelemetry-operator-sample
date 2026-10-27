@@ -1,3 +1,14 @@
+![status: inactive](https://img.shields.io/badge/status-inactive-red.svg)
+
+> [!WARNING]
+> **This project is no longer actively developed or maintained.**
+>
+> For new work on OpenTelemetry instrumentation and collector deployment on Google Kubernetes Engine (GKE), check out:
+> * [Use OpenTelemetry zero-code instrumentation for Java workloads on GKE](https://cloud.google.com/stackdriver/docs/instrumentation/otel-zerocode-java-gke)
+> * [Managed OpenTelemetry for GKE](https://cloud.google.com/kubernetes-engine/docs/concepts/managed-otel-gke)
+> * [GoogleCloudPlatform/opentelemetry-samples](https://github.com/GoogleCloudPlatform/opentelemetry-samples)
+> * [GoogleCloudPlatform/otlp-k8s-ingest](https://github.com/GoogleCloudPlatform/otlp-k8s-ingest)
+
 # OpenTelemetry Operator Sample
 
 This repo hosts samples for working with the OpenTelemetry Operator on GCP.
